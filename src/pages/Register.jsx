@@ -1,16 +1,19 @@
 import { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
-import { Shield, Eye, EyeOff, Loader2 } from 'lucide-react';
+import { motion } from 'framer-motion';
+import { DayNightProvider } from '../components/auth/DayNightContext';
+import TrafficScene from '../components/auth/TrafficScene';
+import { Eye, EyeOff, Loader2, UserPlus, CheckCircle2 } from 'lucide-react';
 
 const ROLES = [
-  { value: 'CITIZEN', label: 'Citizen', desc: 'Report violations and file grievances' },
-  { value: 'TRAFFIC_OFFICER', label: 'Traffic Officer', desc: 'Monitor violations in your area' },
-  { value: 'GRIEVANCE_OFFICER', label: 'Grievance Officer', desc: 'Review and resolve citizen grievances' },
-  { value: 'ADMIN', label: 'Administrator', desc: 'Full system access and management' },
+  { value: 'CITIZEN', label: 'Citizen', icon: '👤' },
+  { value: 'TRAFFIC_OFFICER', label: 'Traffic Officer', icon: '👮' },
+  { value: 'GRIEVANCE_OFFICER', label: 'Grievance Officer', icon: '📋' },
+  { value: 'ADMIN', label: 'Administrator', icon: '🛡️' },
 ];
 
-export default function Register() {
+function RegisterContent() {
   const { register } = useAuth();
   const navigate = useNavigate();
   const [form, setForm] = useState({
@@ -22,6 +25,7 @@ export default function Register() {
   const [showPassword, setShowPassword] = useState(false);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
+  const [success, setSuccess] = useState(false);
 
   const handleChange = (e) => {
     setForm((prev) => ({ ...prev, [e.target.name]: e.target.value }));
@@ -32,14 +36,17 @@ export default function Register() {
     setError('');
     setLoading(true);
     try {
-      const userData = await register(form);
-      const route =
-        userData.role === 'CITIZEN'
-          ? '/citizen'
-          : userData.role === 'ADMIN'
-            ? '/admin'
-            : '/officer';
-      navigate(route);
+      await register(form);
+      setSuccess(true);
+      setTimeout(() => {
+        const route =
+          form.role === 'CITIZEN'
+            ? '/citizen'
+            : form.role === 'ADMIN'
+              ? '/admin'
+              : '/officer';
+        navigate(route);
+      }, 2000);
     } catch (err) {
       setError(err.response?.data?.message || 'Registration failed. Please try again.');
     } finally {
@@ -48,144 +55,172 @@ export default function Register() {
   };
 
   return (
-    <div className="min-h-screen flex">
-      {/* Left panel — branding */}
-      <div className="hidden lg:flex lg:w-1/2 bg-gradient-to-br from-primary-600 via-primary-700 to-primary-900 relative overflow-hidden">
-        <div className="absolute inset-0">
-          <div className="absolute top-20 left-20 h-72 w-72 bg-white/10 rounded-full blur-3xl" />
-          <div className="absolute bottom-20 right-20 h-96 w-96 bg-white/5 rounded-full blur-3xl" />
-        </div>
-        <div className="relative z-10 flex flex-col justify-center px-16 text-white">
-          <div className="p-3 bg-white/15 rounded-2xl w-fit mb-8 backdrop-blur-sm">
-            <Shield className="h-12 w-12" />
-          </div>
-          <h1 className="text-4xl font-bold mb-4">TrafficGuard</h1>
-          <p className="text-xl text-white/80 max-w-md">
-            Join the platform to help maintain road safety and manage traffic violations efficiently.
-          </p>
-        </div>
-      </div>
-
-      {/* Right panel — form */}
-      <div className="flex-1 flex items-center justify-center p-8 bg-white dark:bg-slate-900">
-        <div className="w-full max-w-md">
-          <div className="flex items-center gap-3 mb-8 lg:hidden">
-            <div className="p-2 bg-primary-600 rounded-xl">
-              <Shield className="h-6 w-6 text-white" />
-            </div>
-            <h1 className="text-xl font-bold text-slate-900 dark:text-white">TrafficGuard</h1>
+    <TrafficScene>
+      <motion.div
+        initial={{ opacity: 0, y: 30 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.6, ease: [0.25, 0.46, 0.45, 0.94] }}
+        className="w-full max-w-md mx-4"
+      >
+        {/* Clipboard-style registration form */}
+        <div className="relative">
+          {/* Clipboard top clip */}
+          <div className="flex justify-center -mb-2 relative z-10">
+            <div className="w-24 h-6 bg-amber-700 rounded-t-lg border-2 border-amber-800" />
           </div>
 
-          <div className="mb-8">
-            <h2 className="text-2xl font-bold text-slate-900 dark:text-white mb-2">Create your account</h2>
-            <p className="text-slate-500 dark:text-slate-400">Get started with TrafficGuard</p>
-          </div>
+          {/* Paper form */}
+          <div className="bg-white/95 backdrop-blur-md rounded-2xl shadow-2xl border border-amber-200 p-6 pt-4 relative overflow-hidden">
+            {/* Paper texture overlay */}
+            <div
+              className="absolute inset-0 opacity-[0.03] pointer-events-none"
+              style={{
+                backgroundImage: `repeating-linear-gradient(0deg, transparent, transparent 24px, #94a3b8 24px, #94a3b8 25px)`,
+              }}
+            />
 
-          {error && (
-            <div className="mb-4 p-3 bg-danger-50 dark:bg-danger-900/20 border border-danger-200 dark:border-danger-800 text-danger-700 dark:text-danger-400 text-sm rounded-lg">
-              {error}
-            </div>
-          )}
-
-          <form onSubmit={handleSubmit} className="space-y-4">
-            <div>
-              <label className="input-label">Full name</label>
-              <input
-                type="text"
-                name="fullName"
-                className="input"
-                placeholder="John Doe"
-                value={form.fullName}
-                onChange={handleChange}
-                required
-              />
-            </div>
-
-            <div>
-              <label className="input-label">Email address</label>
-              <input
-                type="email"
-                name="email"
-                className="input"
-                placeholder="you@example.com"
-                value={form.email}
-                onChange={handleChange}
-                required
-              />
-            </div>
-
-            <div>
-              <label className="input-label">Password</label>
-              <div className="relative">
-                <input
-                  type={showPassword ? 'text' : 'password'}
-                  name="password"
-                  className="input pr-10"
-                  placeholder="Min 6 characters"
-                  value={form.password}
-                  onChange={handleChange}
-                  required
-                  minLength={6}
-                />
-                <button
-                  type="button"
-                  onClick={() => setShowPassword(!showPassword)}
-                  className="absolute right-3 top-1/2 -translate-y-1/2 text-slate-400 hover:text-slate-600 dark:hover:text-slate-300"
-                >
-                  {showPassword ? <EyeOff className="h-4 w-4" /> : <Eye className="h-4 w-4" />}
-                </button>
+            {/* Header */}
+            <div className="text-center mb-5 relative">
+              <div className="flex items-center justify-center gap-2 mb-1">
+                <Shield className="h-5 w-5 text-primary-600" />
+                <h2 className="text-lg font-bold text-slate-900">TrafficGuard</h2>
               </div>
+              <p className="text-xs text-slate-500">New Account Registration</p>
+              <div className="w-full h-px bg-gradient-to-r from-transparent via-slate-300 to-transparent mt-3" />
             </div>
 
-            <div>
-              <label className="input-label">Account type</label>
-              <div className="grid grid-cols-2 gap-2">
-                {ROLES.map((role) => (
-                  <button
-                    key={role.value}
-                    type="button"
-                    onClick={() => setForm((prev) => ({ ...prev, role: role.value }))}
-                    className={`p-3 rounded-lg border-2 text-left transition-all ${
-                      form.role === role.value
-                        ? 'border-primary-500 bg-primary-50 dark:bg-primary-900/30'
-                        : 'border-slate-200 dark:border-slate-600 hover:border-slate-300 dark:hover:border-slate-500'
-                    }`}
+            {success ? (
+              <motion.div
+                initial={{ opacity: 0, scale: 0.9 }}
+                animate={{ opacity: 1, scale: 1 }}
+                className="text-center py-8"
+              >
+                <CheckCircle2 className="h-12 w-12 text-success-500 mx-auto mb-3" />
+                <h3 className="text-lg font-bold text-slate-900 mb-1">Registration Successful!</h3>
+                <p className="text-sm text-slate-500">Your account has been created. Redirecting...</p>
+              </motion.div>
+            ) : (
+              <form onSubmit={handleSubmit} className="space-y-3.5 relative">
+                {error && (
+                  <motion.div
+                    initial={{ opacity: 0, y: -5 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    className="p-2 bg-danger-50 border border-danger-200 text-danger-700 text-xs rounded-lg text-center"
                   >
-                    <span
-                      className={`block text-sm font-medium ${
-                        form.role === role.value
-                          ? 'text-primary-700 dark:text-primary-300'
-                          : 'text-slate-700 dark:text-slate-300'
-                      }`}
+                    {error}
+                  </motion.div>
+                )}
+
+                {/* Full Name */}
+                <div>
+                  <label className="text-xs font-semibold text-slate-600 mb-1 block">Full Name</label>
+                  <input
+                    type="text"
+                    name="fullName"
+                    placeholder="Enter your full name"
+                    value={form.fullName}
+                    onChange={handleChange}
+                    required
+                    className="w-full px-3 py-2 text-sm bg-slate-50 border border-slate-200 rounded-lg text-slate-800 placeholder:text-slate-400 focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-primary-500"
+                  />
+                </div>
+
+                {/* Email */}
+                <div>
+                  <label className="text-xs font-semibold text-slate-600 mb-1 block">Email Address</label>
+                  <input
+                    type="email"
+                    name="email"
+                    placeholder="you@example.com"
+                    value={form.email}
+                    onChange={handleChange}
+                    required
+                    className="w-full px-3 py-2 text-sm bg-slate-50 border border-slate-200 rounded-lg text-slate-800 placeholder:text-slate-400 focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-primary-500"
+                  />
+                </div>
+
+                {/* Password */}
+                <div>
+                  <label className="text-xs font-semibold text-slate-600 mb-1 block">Password</label>
+                  <div className="relative">
+                    <input
+                      type={showPassword ? 'text' : 'password'}
+                      name="password"
+                      placeholder="Min 6 characters"
+                      value={form.password}
+                      onChange={handleChange}
+                      required
+                      minLength={6}
+                      className="w-full px-3 py-2 text-sm bg-slate-50 border border-slate-200 rounded-lg text-slate-800 placeholder:text-slate-400 focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-primary-500 pr-8"
+                    />
+                    <button
+                      type="button"
+                      onClick={() => setShowPassword(!showPassword)}
+                      className="absolute right-2.5 top-1/2 -translate-y-1/2 text-slate-400 hover:text-slate-600"
                     >
-                      {role.label}
-                    </span>
-                    <span className="block text-xs text-slate-500 dark:text-slate-400 mt-0.5">{role.desc}</span>
-                  </button>
-                ))}
-              </div>
-            </div>
+                      {showPassword ? <EyeOff className="h-3.5 w-3.5" /> : <Eye className="h-3.5 w-3.5" />}
+                    </button>
+                  </div>
+                </div>
 
-            <button type="submit" disabled={loading} className="btn-primary w-full mt-2">
-              {loading ? (
-                <>
-                  <Loader2 className="h-4 w-4 animate-spin" />
-                  Creating account...
-                </>
-              ) : (
-                'Create Account'
-              )}
-            </button>
-          </form>
+                {/* Role Selection */}
+                <div>
+                  <label className="text-xs font-semibold text-slate-600 mb-1.5 block">Account Type</label>
+                  <div className="grid grid-cols-2 gap-2">
+                    {ROLES.map((role) => (
+                      <button
+                        key={role.value}
+                        type="button"
+                        onClick={() => setForm((prev) => ({ ...prev, role: role.value }))}
+                        className={`p-2 rounded-lg border-2 text-left transition-all text-xs ${
+                          form.role === role.value
+                            ? 'border-primary-500 bg-primary-50'
+                            : 'border-slate-200 hover:border-slate-300'
+                        }`}
+                      >
+                        <span className="text-sm mr-1">{role.icon}</span>
+                        <span className={`font-medium ${form.role === role.value ? 'text-primary-700' : 'text-slate-700'}`}>
+                          {role.label}
+                        </span>
+                      </button>
+                    ))}
+                  </div>
+                </div>
 
-          <p className="mt-6 text-center text-sm text-slate-500 dark:text-slate-400">
-            Already have an account?{' '}
-            <Link to="/login" className="font-medium text-primary-600 hover:text-primary-700 dark:text-primary-400 dark:hover:text-primary-300">
-              Sign in
-            </Link>
-          </p>
+                {/* Submit */}
+                <motion.button
+                  type="submit"
+                  disabled={loading || !form.fullName || !form.email || !form.password}
+                  className="w-full py-2.5 rounded-lg bg-primary-600 hover:bg-primary-700 text-white text-sm font-semibold flex items-center justify-center gap-2 shadow-lg disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
+                  whileTap={{ scale: 0.98 }}
+                >
+                  {loading ? (
+                    <Loader2 className="h-4 w-4 animate-spin" />
+                  ) : (
+                    <UserPlus className="h-4 w-4" />
+                  )}
+                  {loading ? 'Registering...' : 'Create Account'}
+                </motion.button>
+
+                <p className="text-center text-xs text-slate-500">
+                  Already have an account?{' '}
+                  <Link to="/login" className="font-semibold text-primary-600 hover:text-primary-700">
+                    Sign in
+                  </Link>
+                </p>
+              </form>
+            )}
+          </div>
         </div>
-      </div>
-    </div>
+      </motion.div>
+    </TrafficScene>
+  );
+}
+
+export default function Register() {
+  return (
+    <DayNightProvider>
+      <RegisterContent />
+    </DayNightProvider>
   );
 }
