@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
 import { motion, AnimatePresence } from 'framer-motion';
@@ -8,132 +8,114 @@ import { Eye, EyeOff, Loader2, LogIn, Shield, CheckCircle2, Sun, Moon } from 'lu
 function LoginContent() {
   const { login } = useAuth();
   const navigate = useNavigate();
-  const { isDay, toggleMode } = useDayNight();
+  const { isDay, isNight, toggleMode, bgImage } = useDayNight();
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [showPassword, setShowPassword] = useState(false);
-  const [loginPhase, setLoginPhase] = useState('idle');
+  const [phase, setPhase] = useState('idle'); // idle | attempting | success | fail
   const [showSuccess, setShowSuccess] = useState(false);
-
-  const hasCredentials = email.length > 0 && password.length > 0;
 
   const handleSubmit = async (e) => {
     e.preventDefault();
     setError('');
     setLoading(true);
+    setPhase('attempting');
+
     try {
-      setLoginPhase('headlights');
-      await new Promise((r) => setTimeout(r, 400));
+      await new Promise((r) => setTimeout(r, 600));
       const userData = await login(email, password);
-      setLoginPhase('success');
+      setPhase('success');
       setShowSuccess(true);
-      await new Promise((r) => setTimeout(r, 1500));
+      await new Promise((r) => setTimeout(r, 1800));
       const route =
         userData.role === 'CITIZEN' ? '/citizen'
         : userData.role === 'ADMIN' ? '/admin'
         : '/officer';
       navigate(route);
     } catch (err) {
-      setLoginPhase('idle');
+      setPhase('fail');
       setError(err.response?.data?.message || 'Invalid credentials. Try again.');
+      setTimeout(() => setPhase('idle'), 2000);
     } finally {
       setLoading(false);
     }
   };
 
   return (
-    <div className="relative w-full h-screen overflow-hidden select-none bg-slate-900">
-      {/* === LAYER 1: Scene background image === */}
+    <div className="relative w-full h-screen overflow-hidden select-none bg-black">
+      {/* LAYER 1: Background image */}
       <AnimatePresence mode="wait">
         <motion.div
-          key={isDay ? 'day-scene' : 'night-scene'}
+          key={bgImage}
           className="absolute inset-0"
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
           exit={{ opacity: 0 }}
           transition={{ duration: 1 }}
         >
-          <img
-            src={isDay ? '/auth-scenes/day-1.png' : '/auth-scenes/night-1.png'}
-            alt=""
-            className="w-full h-full object-cover"
-            draggable={false}
-          />
+          <img src={bgImage} alt="" className="w-full h-full object-cover" draggable={false} />
         </motion.div>
       </AnimatePresence>
 
-      {/* === LAYER 2: Extracted assets positioned on the scene === */}
-      {/* Traffic light - left side */}
-      <motion.img
-        src="/auth-scenes/assets-clean/traffic-light.png"
-        alt="Traffic light"
-        className="absolute z-10"
-        style={{ left: '17%', top: '30%', width: '5.5%' }}
-        initial={{ opacity: 0, x: -20 }}
-        animate={{ opacity: 1, x: 0 }}
-        transition={{ duration: 0.8, delay: 0.2 }}
-      />
+      {/* LAYER 2: Red glow overlay on login failure (traffic light + CCTV effect) */}
+      <AnimatePresence>
+        {phase === 'fail' && (
+          <motion.div
+            className="absolute inset-0 pointer-events-none z-10"
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            transition={{ duration: 0.3 }}
+          >
+            {/* Red glow on left side (traffic light area) */}
+            <div
+              className="absolute"
+              style={{
+                left: '10%', top: '20%', width: '25%', height: '50%',
+                background: 'radial-gradient(ellipse, rgba(239,68,68,0.4) 0%, transparent 70%)',
+              }}
+            />
+            {/* Red glow on right side (CCTV area) */}
+            <div
+              className="absolute"
+              style={{
+                right: '5%', top: '10%', width: '25%', height: '50%',
+                background: 'radial-gradient(ellipse, rgba(239,68,68,0.35) 0%, transparent 70%)',
+              }}
+            />
+          </motion.div>
+        )}
+      </AnimatePresence>
 
-      {/* CCTV camera - right side on pole */}
-      <motion.img
-        src="/auth-scenes/assets-clean/cctv-side.png"
-        alt="CCTV camera"
-        className="absolute z-10"
-        style={{ right: '14%', top: '18%', width: '8%' }}
-        initial={{ opacity: 0, x: 20 }}
-        animate={{ opacity: 1, x: 0 }}
-        transition={{ duration: 0.8, delay: 0.3 }}
-      />
-
-      {/* Speed limit sign - left */}
-      <motion.img
-        src="/auth-scenes/assets-clean/speed-sign-60.png"
-        alt="Speed limit"
-        className="absolute z-10"
-        style={{ left: '11%', top: '48%', width: '4.5%' }}
-        initial={{ opacity: 0, y: 10 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ duration: 0.8, delay: 0.4 }}
-      />
-
-      {/* Street light - right */}
-      <motion.img
-        src="/auth-scenes/assets-clean/street-light.png"
-        alt="Street light"
-        className="absolute z-10"
-        style={{ right: '8%', top: '28%', width: '6%' }}
-        initial={{ opacity: 0 }}
-        animate={{ opacity: 0.7 }}
-        transition={{ duration: 1, delay: 0.5 }}
-      />
-
-      {/* Car - center of road, changes based on login phase */}
-      <motion.img
-        src={
-          loginPhase === 'headlights'
-            ? '/auth-scenes/assets-clean/car-headlights-on.png'
-            : '/auth-scenes/assets-clean/car-front.png'
+      {/* LAYER 3: Car in the middle */}
+      <motion.div
+        className="absolute z-15"
+        style={{ left: '50%', bottom: '8%', x: '-50%' }}
+        animate={
+          phase === 'success'
+            ? { scale: 3, opacity: 0, y: -200, filter: 'blur(8px)' }
+            : phase === 'attempting'
+            ? { scale: 1.05, y: -5 }
+            : { scale: 1, y: 0 }
         }
-        alt="Vehicle"
-        className="absolute z-10"
-        style={{ left: '50%', top: '52%', width: '16%', transform: 'translate(-50%, -50%)' }}
-        initial={{ opacity: 0, scale: 0.8 }}
-        animate={{
-          opacity: 1,
-          scale: loginPhase === 'headlights' ? 1.05 : 1,
-        }}
-        transition={{ duration: 0.6, delay: 0.1 }}
-      />
+        transition={
+          phase === 'success'
+            ? { duration: 1.5, ease: [0.25, 0.46, 0.45, 0.94] }
+            : { duration: 0.3 }
+        }
+      >
+        <img
+          src="/car.png"
+          alt="Vehicle"
+          className="w-48 md:w-64 lg:w-72 drop-shadow-2xl"
+          draggable={false}
+        />
+      </motion.div>
 
-      {/* === LAYER 3: Vignette overlay === */}
-      <div className="absolute inset-0 pointer-events-none z-15" style={{
-        background: 'radial-gradient(ellipse at center, transparent 35%, rgba(0,0,0,0.45) 100%)'
-      }} />
-
-      {/* === LAYER 4: Login form card === */}
-      <div className="absolute inset-0 flex items-center justify-center z-20">
+      {/* LAYER 4: Login form card - positioned over the car */}
+      <div className="absolute inset-0 flex items-center justify-center z-20 pb-16">
         <AnimatePresence mode="wait">
           {showSuccess ? (
             <motion.div
@@ -144,34 +126,30 @@ function LoginContent() {
               transition={{ duration: 0.5 }}
               className="w-full max-w-xs mx-4"
             >
-              <div className="bg-white/95 backdrop-blur-xl rounded-2xl shadow-2xl p-8 text-center border border-white/50">
+              <div className="bg-white/95 backdrop-blur-xl rounded-2xl shadow-2xl p-8 text-center">
                 <motion.div
                   initial={{ scale: 0 }}
                   animate={{ scale: 1 }}
                   transition={{ type: 'spring', stiffness: 200, delay: 0.15 }}
                 >
-                  <img
-                    src="/auth-scenes/assets-clean/checkmark-green.png"
-                    alt="Success"
-                    className="w-16 h-16 mx-auto mb-3 object-contain"
-                  />
+                  <CheckCircle2 className="h-16 w-16 text-green-500 mx-auto mb-3" />
                 </motion.div>
-                <h3 className="text-lg font-bold text-slate-900 mb-1">Registration Successful</h3>
-                <p className="text-xs text-slate-500">Your account has been created. You can now login.</p>
+                <h3 className="text-lg font-bold text-slate-900 mb-1">Access Granted</h3>
+                <p className="text-xs text-slate-500">Entering TrafficGuard...</p>
               </div>
             </motion.div>
           ) : (
             <motion.div
-              key="login-form"
-              initial={{ opacity: 0, y: 20 }}
+              key="login"
+              initial={{ opacity: 0, y: 30 }}
               animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.8, delay: 0.3, ease: [0.25, 0.46, 0.45, 0.94] }}
+              exit={{ opacity: 0, y: -20 }}
+              transition={{ duration: 0.7, delay: 0.3, ease: [0.25, 0.46, 0.45, 0.94] }}
               className="w-full max-w-xs mx-4"
             >
               <div className="relative">
-                <div className="absolute -inset-2 bg-primary-500/10 rounded-3xl blur-2xl" />
-
-                <div className="relative bg-white/95 backdrop-blur-xl rounded-2xl shadow-2xl border border-white/50 p-6 overflow-hidden">
+                <div className="absolute -inset-1.5 bg-primary-500/15 rounded-3xl blur-xl" />
+                <div className="relative bg-white/95 backdrop-blur-xl rounded-2xl shadow-2xl p-6">
                   {/* Header */}
                   <div className="text-center mb-5">
                     <div className="inline-flex items-center justify-center w-12 h-12 rounded-xl bg-primary-600 shadow-lg shadow-primary-600/30 mb-3">
@@ -230,15 +208,9 @@ function LoginContent() {
                       whileTap={{ scale: loading ? 1 : 0.98 }}
                     >
                       {loading ? (
-                        <>
-                          <Loader2 className="h-4 w-4 animate-spin" />
-                          {loginPhase === 'headlights' ? 'Starting engine...' : 'Verifying...'}
-                        </>
+                        <><Loader2 className="h-4 w-4 animate-spin" /> Verifying...</>
                       ) : (
-                        <>
-                          <LogIn className="h-4 w-4" />
-                          LOGIN
-                        </>
+                        <><LogIn className="h-4 w-4" /> LOGIN</>
                       )}
                     </motion.button>
 
