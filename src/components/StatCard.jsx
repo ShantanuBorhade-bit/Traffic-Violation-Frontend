@@ -1,3 +1,4 @@
+import { motion } from 'framer-motion';
 import clsx from 'clsx';
 
 const COLOR_MAP = {
@@ -27,7 +28,11 @@ export default function StatCard({ icon: Icon, label, value, color = 'primary', 
   const colors = COLOR_MAP[color] || COLOR_MAP.primary;
 
   return (
-    <div className={clsx('card p-5 flex items-center gap-4', className)}>
+    <motion.div
+      whileHover={{ y: -2, boxShadow: '0 4px 12px 0 rgb(0 0 0 / 0.08)' }}
+      transition={{ duration: 0.2 }}
+      className={clsx('card p-5 flex items-center gap-4', className)}
+    >
       <div className={clsx('p-3 rounded-xl', colors.bg)}>
         <Icon className={clsx('h-6 w-6', colors.icon)} />
       </div>
@@ -35,6 +40,6 @@ export default function StatCard({ icon: Icon, label, value, color = 'primary', 
         <p className="text-sm font-medium text-slate-500 dark:text-slate-400">{label}</p>
         <p className={clsx('text-2xl font-bold', colors.value)}>{value}</p>
       </div>
-    </div>
+    </motion.div>
   );
 }
