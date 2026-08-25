@@ -38,6 +38,12 @@ export const authAPI = {
   getProfile: () => api.get('/auth/profile'),
 };
 
+// ── Challans (Citizen) ──
+export const citizenChallanAPI = {
+  getMyChallans: () => api.get('/challans/my'),
+  getById: (id) => api.get(`/challans/${id}`),
+};
+
 // ── Grievances (Citizen) ──
 export const grievanceAPI = {
   create: (formData) =>

@@ -10,6 +10,7 @@ import Profile from './pages/Profile';
 
 // Citizen
 import CitizenDashboard from './pages/citizen/CitizenDashboard';
+import MyChallans from './pages/citizen/MyChallans';
 import MyGrievances from './pages/citizen/MyGrievances';
 import FileGrievance from './pages/citizen/FileGrievance';
 import GrievanceDetail from './pages/citizen/GrievanceDetail';
@@ -68,7 +69,7 @@ export default function App() {
               path="/citizen/challans"
               element={
                 <ProtectedRoute allowedRoles={['CITIZEN']}>
-                  <CitizenDashboard />
+                  <MyChallans />
                 </ProtectedRoute>
               }
             />
