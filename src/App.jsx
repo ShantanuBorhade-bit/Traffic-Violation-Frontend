@@ -23,6 +23,7 @@ import OfficerGrievanceDetail from './pages/officer/OfficerGrievanceDetail';
 // Admin
 import AdminDashboard from './pages/admin/AdminDashboard';
 import AdminViolations from './pages/admin/AdminViolations';
+import AdminViolationDetail from './pages/admin/AdminViolationDetail';
 import AdminChallans from './pages/admin/AdminChallans';
 import AdminGrievances from './pages/admin/AdminGrievances';
 import AdminUsers from './pages/admin/AdminUsers';
@@ -138,6 +139,14 @@ export default function App() {
               element={
                 <ProtectedRoute allowedRoles={['ADMIN']}>
                   <AdminViolations />
+                </ProtectedRoute>
+              }
+            />
+            <Route
+              path="/admin/violations/:id"
+              element={
+                <ProtectedRoute allowedRoles={['ADMIN']}>
+                  <AdminViolationDetail />
                 </ProtectedRoute>
               }
             />
