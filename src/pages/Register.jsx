@@ -22,7 +22,7 @@ function RegisterContent() {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
   const [success, setSuccess] = useState(false);
-  const [showForm, setShowForm] = useState(false);
+  const [showForm, setShowForm] = useState(true);
 
   const handleChange = (e) => setForm((prev) => ({ ...prev, [e.target.name]: e.target.value }));
 
@@ -91,44 +91,6 @@ function RegisterContent() {
                   </motion.div>
                   <h3 className="text-base font-bold text-slate-900 mb-1">Registration Successful!</h3>
                   <p className="text-[11px] text-slate-500">Redirecting to login...</p>
-                </div>
-              </div>
-            </motion.div>
-          ) : !showForm ? (
-            /* Pre-form: Register prompt card */
-            <motion.div key="prompt" initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }}
-              exit={{ opacity: 0, scale: 0.9 }} transition={{ duration: 0.5 }} className="w-full max-w-[320px] mx-4">
-              {/* Clipboard clip */}
-              <div className="flex justify-center -mb-2 relative z-10">
-                <div className="w-24 h-5 rounded-t-lg border-2 border-amber-900 shadow-md"
-                  style={{ background: 'linear-gradient(180deg, #92400e 0%, #78350f 100%)' }} />
-              </div>
-              {/* Paper */}
-              <div className="relative rounded-2xl shadow-2xl overflow-hidden"
-                style={{ background: 'linear-gradient(135deg, #c7c1cb 0%, #d1cbd5 50%, #bfb9c3 100%)' }}>
-                <div className="absolute inset-0 opacity-[0.06] pointer-events-none"
-                  style={{ backgroundImage: 'repeating-linear-gradient(0deg, transparent, transparent 22px, #64748b 22px, #64748b 23px)' }} />
-                <div className="relative m-2 rounded-xl bg-white/90 backdrop-blur-sm p-5 shadow-inner">
-                  <div className="text-center mb-4">
-                    <div className="inline-flex items-center justify-center w-10 h-10 rounded-lg bg-primary-600 shadow-md shadow-primary-600/30 mb-2">
-                      <Shield className="h-5 w-5 text-white" />
-                    </div>
-                    <h1 className="text-xs font-bold text-slate-800 tracking-wider uppercase">
-                      Traffic Violation<br />Detection System
-                    </h1>
-                    <p className="text-[9px] text-slate-400 mt-1">Full Stack Project</p>
-                    <div className="w-full h-px bg-gradient-to-r from-transparent via-slate-300 to-transparent mt-3" />
-                  </div>
-                  <motion.button onClick={() => setShowForm(true)}
-                    className="w-full py-2 rounded-lg text-white text-[11px] font-semibold flex items-center justify-center gap-1.5 shadow-md transition-colors"
-                    style={{ background: 'linear-gradient(135deg, #2563eb 0%, #1d4ed8 100%)' }}
-                    whileHover={{ scale: 1.02 }} whileTap={{ scale: 0.98 }}>
-                    <UserPlus className="h-3.5 w-3.5" /> REGISTER
-                  </motion.button>
-                  <p className="text-center text-[10px] text-slate-500 pt-3">
-                    Already have an account?{' '}
-                    <Link to="/login" className="text-primary-600 font-semibold hover:text-primary-700 underline underline-offset-2">Sign in</Link>
-                  </p>
                 </div>
               </div>
             </motion.div>
