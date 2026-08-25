@@ -8,7 +8,6 @@ import EmptyState from '../../components/EmptyState';
 import Spinner from '../../components/Spinner';
 import { format } from 'date-fns';
 import {
-  AlertCircle,
   Clock,
   CheckCircle2,
   XCircle,
@@ -51,10 +50,8 @@ export default function OfficerDashboard() {
   return (
     <div className="space-y-8">
       <div>
-        <h1 className="text-2xl font-bold text-slate-900">
-          Officer Dashboard
-        </h1>
-        <p className="text-slate-500 mt-1">
+        <h1 className="text-2xl font-bold text-slate-900 dark:text-white">Officer Dashboard</h1>
+        <p className="text-slate-500 dark:text-slate-400 mt-1">
           Welcome, {user?.fullName}. Review and manage citizen grievances.
         </p>
       </div>
@@ -68,23 +65,23 @@ export default function OfficerDashboard() {
 
       {/* Pending Queue */}
       <div className="card">
-        <div className="flex items-center justify-between px-6 py-4 border-b border-slate-200">
-          <h2 className="text-lg font-semibold text-slate-900">
+        <div className="flex items-center justify-between px-6 py-4 border-b border-slate-200 dark:border-slate-700">
+          <h2 className="text-lg font-semibold text-slate-900 dark:text-white">
             Pending Reviews
             {pending.length > 0 && (
-              <span className="ml-2 inline-flex items-center px-2 py-0.5 bg-warning-100 text-warning-700 text-xs font-medium rounded-full">
+              <span className="ml-2 inline-flex items-center px-2 py-0.5 bg-warning-100 dark:bg-warning-900/40 text-warning-700 dark:text-warning-300 text-xs font-medium rounded-full">
                 {pending.length}
               </span>
             )}
           </h2>
           <Link
             to="/officer/grievances"
-            className="text-sm font-medium text-primary-600 hover:text-primary-700 flex items-center gap-1"
+            className="text-sm font-medium text-primary-600 hover:text-primary-700 dark:text-primary-400 dark:hover:text-primary-300 flex items-center gap-1"
           >
             View all <ArrowRight className="h-4 w-4" />
           </Link>
         </div>
-        <div className="divide-y divide-slate-100">
+        <div className="divide-y divide-slate-100 dark:divide-slate-700">
           {pending.length === 0 ? (
             <EmptyState
               icon={CheckCircle2}
@@ -96,17 +93,17 @@ export default function OfficerDashboard() {
               <Link
                 key={g.id}
                 to={`/officer/grievances/${g.id}`}
-                className="flex items-center justify-between px-6 py-4 hover:bg-slate-50 transition-colors"
+                className="flex items-center justify-between px-6 py-4 hover:bg-slate-50 dark:hover:bg-slate-700/50 transition-colors"
               >
                 <div className="min-w-0">
                   <div className="flex items-center gap-2 mb-1">
                     <StatusBadge status={g.status} />
                     <StatusBadge status={g.reason} />
                   </div>
-                  <p className="text-sm text-slate-600 truncate">
+                  <p className="text-sm text-slate-600 dark:text-slate-300 truncate">
                     {g.citizen?.fullName} — {g.description || 'No description'}
                   </p>
-                  <p className="text-xs text-slate-400 mt-1">
+                  <p className="text-xs text-slate-400 dark:text-slate-500 mt-1">
                     {format(new Date(g.createdAt), 'MMM d, yyyy h:mm a')}
                   </p>
                 </div>

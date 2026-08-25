@@ -1,4 +1,4 @@
-import { NavLink, useLocation } from 'react-router-dom';
+import { NavLink } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
 import {
   Shield,
@@ -48,7 +48,6 @@ const ROLE_LABEL = {
 
 export default function Sidebar({ isOpen, onClose }) {
   const { user, logout } = useAuth();
-  const location = useLocation();
   const navItems = ROLE_NAV[user?.role] || [];
 
   return (
@@ -64,25 +63,25 @@ export default function Sidebar({ isOpen, onClose }) {
       {/* Sidebar */}
       <aside
         className={clsx(
-          'fixed inset-y-0 left-0 z-50 w-64 bg-white border-r border-slate-200 flex flex-col transition-transform duration-300',
+          'fixed inset-y-0 left-0 z-50 w-64 bg-white dark:bg-slate-800 border-r border-slate-200 dark:border-slate-700 flex flex-col transition-transform duration-300',
           'lg:translate-x-0 lg:static lg:z-auto',
           isOpen ? 'translate-x-0' : '-translate-x-full'
         )}
       >
         {/* Logo */}
-        <div className="flex items-center gap-3 px-5 py-5 border-b border-slate-200">
+        <div className="flex items-center gap-3 px-5 py-5 border-b border-slate-200 dark:border-slate-700">
           <div className="p-2 bg-primary-600 rounded-xl">
             <Shield className="h-6 w-6 text-white" />
           </div>
           <div>
-            <h1 className="text-lg font-bold text-slate-900 leading-tight">TrafficGuard</h1>
-            <p className="text-xs text-slate-500">Violation Management</p>
+            <h1 className="text-lg font-bold text-slate-900 dark:text-white leading-tight">TrafficGuard</h1>
+            <p className="text-xs text-slate-500 dark:text-slate-400">Violation Management</p>
           </div>
         </div>
 
         {/* Role badge */}
         <div className="px-5 py-3">
-          <span className="inline-flex items-center gap-1.5 px-2.5 py-1 bg-primary-50 text-primary-700 text-xs font-medium rounded-lg">
+          <span className="inline-flex items-center gap-1.5 px-2.5 py-1 bg-primary-50 dark:bg-primary-900/30 text-primary-700 dark:text-primary-300 text-xs font-medium rounded-lg">
             <Car className="h-3 w-3" />
             {ROLE_LABEL[user?.role]}
           </span>
@@ -100,8 +99,8 @@ export default function Sidebar({ isOpen, onClose }) {
                 clsx(
                   'flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium transition-colors duration-150',
                   isActive
-                    ? 'bg-primary-50 text-primary-700'
-                    : 'text-slate-600 hover:bg-slate-50 hover:text-slate-900'
+                    ? 'bg-primary-50 dark:bg-primary-900/30 text-primary-700 dark:text-primary-300'
+                    : 'text-slate-600 dark:text-slate-400 hover:bg-slate-50 dark:hover:bg-slate-700/50 hover:text-slate-900 dark:hover:text-slate-200'
                 )
               }
             >
@@ -112,7 +111,7 @@ export default function Sidebar({ isOpen, onClose }) {
         </nav>
 
         {/* User footer */}
-        <div className="border-t border-slate-200 p-3 space-y-1">
+        <div className="border-t border-slate-200 dark:border-slate-700 p-3 space-y-1">
           <NavLink
             to="/profile"
             onClick={onClose}
@@ -120,8 +119,8 @@ export default function Sidebar({ isOpen, onClose }) {
               clsx(
                 'flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium transition-colors duration-150',
                 isActive
-                  ? 'bg-slate-100 text-slate-900'
-                  : 'text-slate-600 hover:bg-slate-50 hover:text-slate-900'
+                  ? 'bg-slate-100 dark:bg-slate-700 text-slate-900 dark:text-white'
+                  : 'text-slate-600 dark:text-slate-400 hover:bg-slate-50 dark:hover:bg-slate-700/50 hover:text-slate-900 dark:hover:text-slate-200'
               )
             }
           >
@@ -133,7 +132,7 @@ export default function Sidebar({ isOpen, onClose }) {
               logout();
               window.location.href = '/login';
             }}
-            className="flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium text-slate-600 hover:bg-danger-50 hover:text-danger-700 transition-colors duration-150 w-full"
+            className="flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium text-slate-600 dark:text-slate-400 hover:bg-danger-50 dark:hover:bg-danger-900/20 hover:text-danger-700 dark:hover:text-danger-400 transition-colors duration-150 w-full"
           >
             <LogOut className="h-5 w-5" />
             Sign Out

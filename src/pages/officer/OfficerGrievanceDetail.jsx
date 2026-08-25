@@ -91,7 +91,7 @@ export default function OfficerGrievanceDetail() {
   if (error) {
     return (
       <div className="text-center py-20">
-        <p className="text-danger-600">{error}</p>
+        <p className="text-danger-600 dark:text-danger-400">{error}</p>
         <Link to="/officer/grievances" className="btn-primary mt-4">
           Back to Grievances
         </Link>
@@ -106,7 +106,7 @@ export default function OfficerGrievanceDetail() {
     <div className="max-w-3xl mx-auto space-y-6">
       <Link
         to="/officer/grievances"
-        className="inline-flex items-center gap-1.5 text-sm text-slate-500 hover:text-slate-700"
+        className="inline-flex items-center gap-1.5 text-sm text-slate-500 dark:text-slate-400 hover:text-slate-700 dark:hover:text-slate-200"
       >
         <ArrowLeft className="h-4 w-4" />
         Back to grievances
@@ -119,18 +119,12 @@ export default function OfficerGrievanceDetail() {
               <StatusBadge status={grievance.status} />
               <StatusBadge status={grievance.reason} />
             </div>
-            <h1 className="text-xl font-bold text-slate-900">Grievance Review</h1>
-            <p className="text-xs text-slate-400 mt-1">ID: {grievance.id}</p>
+            <h1 className="text-xl font-bold text-slate-900 dark:text-white">Grievance Review</h1>
+            <p className="text-xs text-slate-400 dark:text-slate-500 mt-1">ID: {grievance.id}</p>
           </div>
-
-          {/* Action buttons */}
           <div className="flex gap-2">
             {isPending && (
-              <button
-                onClick={handleStartReview}
-                disabled={actionLoading}
-                className="btn-primary"
-              >
+              <button onClick={handleStartReview} disabled={actionLoading} className="btn-primary">
                 {actionLoading ? (
                   <Loader2 className="h-4 w-4 animate-spin" />
                 ) : (
@@ -163,43 +157,51 @@ export default function OfficerGrievanceDetail() {
         </div>
 
         <div className="space-y-4">
-          {/* Citizen Info */}
-          <div className="p-4 bg-slate-50 rounded-xl">
-            <h3 className="text-sm font-semibold text-slate-700 mb-2">Citizen Information</h3>
+          <div className="p-4 bg-slate-50 dark:bg-slate-700/50 rounded-xl">
+            <h3 className="text-sm font-semibold text-slate-700 dark:text-slate-200 mb-2">
+              Citizen Information
+            </h3>
             <div className="grid grid-cols-2 gap-3 text-sm">
               <div>
-                <p className="text-slate-500">Name</p>
-                <p className="font-medium text-slate-700">{grievance.citizen?.fullName}</p>
+                <p className="text-slate-500 dark:text-slate-400">Name</p>
+                <p className="font-medium text-slate-700 dark:text-slate-200">
+                  {grievance.citizen?.fullName}
+                </p>
               </div>
               <div>
-                <p className="text-slate-500">Email</p>
-                <p className="font-medium text-slate-700">{grievance.citizen?.email}</p>
+                <p className="text-slate-500 dark:text-slate-400">Email</p>
+                <p className="font-medium text-slate-700 dark:text-slate-200">
+                  {grievance.citizen?.email}
+                </p>
               </div>
             </div>
           </div>
 
-          {/* Challan Info */}
           {grievance.challan && (
-            <div className="p-4 bg-slate-50 rounded-xl">
-              <h3 className="text-sm font-semibold text-slate-700 mb-2">Related Challan</h3>
+            <div className="p-4 bg-slate-50 dark:bg-slate-700/50 rounded-xl">
+              <h3 className="text-sm font-semibold text-slate-700 dark:text-slate-200 mb-2">
+                Related Challan
+              </h3>
               <div className="grid grid-cols-2 gap-3 text-sm">
                 <div>
-                  <p className="text-slate-500">Challan Number</p>
-                  <p className="font-medium text-slate-700">{grievance.challan.challanNumber}</p>
+                  <p className="text-slate-500 dark:text-slate-400">Challan Number</p>
+                  <p className="font-medium text-slate-700 dark:text-slate-200">
+                    {grievance.challan.challanNumber}
+                  </p>
                 </div>
                 <div>
-                  <p className="text-slate-500">Fine Amount</p>
-                  <p className="font-medium text-slate-700">
+                  <p className="text-slate-500 dark:text-slate-400">Fine Amount</p>
+                  <p className="font-medium text-slate-700 dark:text-slate-200">
                     ₹{parseFloat(grievance.challan.fineAmount).toLocaleString()}
                   </p>
                 </div>
                 <div>
-                  <p className="text-slate-500">Status</p>
+                  <p className="text-slate-500 dark:text-slate-400">Status</p>
                   <StatusBadge status={grievance.challan.status} />
                 </div>
                 <div>
-                  <p className="text-slate-500">Vehicle</p>
-                  <p className="font-medium text-slate-700">
+                  <p className="text-slate-500 dark:text-slate-400">Vehicle</p>
+                  <p className="font-medium text-slate-700 dark:text-slate-200">
                     {grievance.challan.vehicle?.registrationNumber || 'N/A'}
                   </p>
                 </div>
@@ -207,45 +209,54 @@ export default function OfficerGrievanceDetail() {
             </div>
           )}
 
-          {/* Description */}
           {grievance.description && (
-            <div className="p-4 bg-slate-50 rounded-xl">
-              <h3 className="text-sm font-semibold text-slate-700 mb-2">Citizen&apos;s Description</h3>
-              <p className="text-sm text-slate-600">{grievance.description}</p>
+            <div className="p-4 bg-slate-50 dark:bg-slate-700/50 rounded-xl">
+              <h3 className="text-sm font-semibold text-slate-700 dark:text-slate-200 mb-2">
+                Citizen&apos;s Description
+              </h3>
+              <p className="text-sm text-slate-600 dark:text-slate-300">{grievance.description}</p>
             </div>
           )}
 
-          {/* Officer Note */}
           {grievance.officerNote && (
-            <div className="p-4 bg-primary-50 rounded-xl border border-primary-100">
-              <h3 className="text-sm font-semibold text-primary-700 mb-2">Officer&apos;s Note</h3>
-              <p className="text-sm text-primary-600">{grievance.officerNote}</p>
+            <div className="p-4 bg-primary-50 dark:bg-primary-900/20 rounded-xl border border-primary-100 dark:border-primary-800">
+              <h3 className="text-sm font-semibold text-primary-700 dark:text-primary-300 mb-2">
+                Officer&apos;s Note
+              </h3>
+              <p className="text-sm text-primary-600 dark:text-primary-400">
+                {grievance.officerNote}
+              </p>
             </div>
           )}
 
-          {/* Timeline */}
-          <div className="p-4 bg-slate-50 rounded-xl">
-            <h3 className="text-sm font-semibold text-slate-700 mb-4">Timeline</h3>
+          <div className="p-4 bg-slate-50 dark:bg-slate-700/50 rounded-xl">
+            <h3 className="text-sm font-semibold text-slate-700 dark:text-slate-200 mb-4">
+              Timeline
+            </h3>
             <div className="space-y-3">
               <div className="flex items-start gap-3">
-                <div className="p-1.5 bg-primary-100 rounded-lg mt-0.5">
-                  <FileText className="h-3.5 w-3.5 text-primary-600" />
+                <div className="p-1.5 bg-primary-100 dark:bg-primary-900/40 rounded-lg mt-0.5">
+                  <FileText className="h-3.5 w-3.5 text-primary-600 dark:text-primary-400" />
                 </div>
                 <div>
-                  <p className="text-sm font-medium text-slate-700">Grievance Filed</p>
-                  <p className="text-xs text-slate-400">
+                  <p className="text-sm font-medium text-slate-700 dark:text-slate-200">
+                    Grievance Filed
+                  </p>
+                  <p className="text-xs text-slate-400 dark:text-slate-500">
                     {format(new Date(grievance.createdAt), 'MMM d, yyyy h:mm a')}
                   </p>
                 </div>
               </div>
               {grievance.reviewedAt && (
                 <div className="flex items-start gap-3">
-                  <div className="p-1.5 bg-warning-100 rounded-lg mt-0.5">
-                    <User className="h-3.5 w-3.5 text-warning-600" />
+                  <div className="p-1.5 bg-warning-100 dark:bg-warning-900/40 rounded-lg mt-0.5">
+                    <User className="h-3.5 w-3.5 text-warning-600 dark:text-warning-400" />
                   </div>
                   <div>
-                    <p className="text-sm font-medium text-slate-700">Review Started</p>
-                    <p className="text-xs text-slate-400">
+                    <p className="text-sm font-medium text-slate-700 dark:text-slate-200">
+                      Review Started
+                    </p>
+                    <p className="text-xs text-slate-400 dark:text-slate-500">
                       {format(new Date(grievance.reviewedAt), 'MMM d, yyyy h:mm a')}
                     </p>
                   </div>
@@ -266,9 +277,9 @@ export default function OfficerGrievanceDetail() {
         title="Approve Grievance"
       >
         <div className="space-y-4">
-          <div className="flex items-center gap-3 p-3 bg-success-50 rounded-lg">
-            <CheckCircle2 className="h-5 w-5 text-success-600" />
-            <p className="text-sm text-success-700">
+          <div className="flex items-center gap-3 p-3 bg-success-50 dark:bg-success-900/20 rounded-lg">
+            <CheckCircle2 className="h-5 w-5 text-success-600 dark:text-success-400" />
+            <p className="text-sm text-success-700 dark:text-success-300">
               This will cancel the associated challan and mark the violation as rejected.
             </p>
           </div>
@@ -292,7 +303,11 @@ export default function OfficerGrievanceDetail() {
               Cancel
             </button>
             <button onClick={handleApprove} disabled={actionLoading} className="btn-success">
-              {actionLoading ? <Loader2 className="h-4 w-4 animate-spin" /> : <CheckCircle2 className="h-4 w-4" />}
+              {actionLoading ? (
+                <Loader2 className="h-4 w-4 animate-spin" />
+              ) : (
+                <CheckCircle2 className="h-4 w-4" />
+              )}
               Confirm Approval
             </button>
           </div>
@@ -309,9 +324,9 @@ export default function OfficerGrievanceDetail() {
         title="Reject Grievance"
       >
         <div className="space-y-4">
-          <div className="flex items-center gap-3 p-3 bg-danger-50 rounded-lg">
-            <AlertTriangle className="h-5 w-5 text-danger-600" />
-            <p className="text-sm text-danger-700">
+          <div className="flex items-center gap-3 p-3 bg-danger-50 dark:bg-danger-900/20 rounded-lg">
+            <AlertTriangle className="h-5 w-5 text-danger-600 dark:text-danger-400" />
+            <p className="text-sm text-danger-700 dark:text-danger-300">
               The challan will remain active and the citizen will be notified of the rejection.
             </p>
           </div>
@@ -334,8 +349,16 @@ export default function OfficerGrievanceDetail() {
             >
               Cancel
             </button>
-            <button onClick={handleReject} disabled={actionLoading || !officerNote} className="btn-danger">
-              {actionLoading ? <Loader2 className="h-4 w-4 animate-spin" /> : <XCircle className="h-4 w-4" />}
+            <button
+              onClick={handleReject}
+              disabled={actionLoading || !officerNote}
+              className="btn-danger"
+            >
+              {actionLoading ? (
+                <Loader2 className="h-4 w-4 animate-spin" />
+              ) : (
+                <XCircle className="h-4 w-4" />
+              )}
               Confirm Rejection
             </button>
           </div>

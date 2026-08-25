@@ -67,22 +67,22 @@ export default function Register() {
       </div>
 
       {/* Right panel — form */}
-      <div className="flex-1 flex items-center justify-center p-8">
+      <div className="flex-1 flex items-center justify-center p-8 bg-white dark:bg-slate-900">
         <div className="w-full max-w-md">
           <div className="flex items-center gap-3 mb-8 lg:hidden">
             <div className="p-2 bg-primary-600 rounded-xl">
               <Shield className="h-6 w-6 text-white" />
             </div>
-            <h1 className="text-xl font-bold text-slate-900">TrafficGuard</h1>
+            <h1 className="text-xl font-bold text-slate-900 dark:text-white">TrafficGuard</h1>
           </div>
 
           <div className="mb-8">
-            <h2 className="text-2xl font-bold text-slate-900 mb-2">Create your account</h2>
-            <p className="text-slate-500">Get started with TrafficGuard</p>
+            <h2 className="text-2xl font-bold text-slate-900 dark:text-white mb-2">Create your account</h2>
+            <p className="text-slate-500 dark:text-slate-400">Get started with TrafficGuard</p>
           </div>
 
           {error && (
-            <div className="mb-4 p-3 bg-danger-50 border border-danger-200 text-danger-700 text-sm rounded-lg">
+            <div className="mb-4 p-3 bg-danger-50 dark:bg-danger-900/20 border border-danger-200 dark:border-danger-800 text-danger-700 dark:text-danger-400 text-sm rounded-lg">
               {error}
             </div>
           )}
@@ -130,7 +130,7 @@ export default function Register() {
                 <button
                   type="button"
                   onClick={() => setShowPassword(!showPassword)}
-                  className="absolute right-3 top-1/2 -translate-y-1/2 text-slate-400 hover:text-slate-600"
+                  className="absolute right-3 top-1/2 -translate-y-1/2 text-slate-400 hover:text-slate-600 dark:hover:text-slate-300"
                 >
                   {showPassword ? <EyeOff className="h-4 w-4" /> : <Eye className="h-4 w-4" />}
                 </button>
@@ -147,18 +147,20 @@ export default function Register() {
                     onClick={() => setForm((prev) => ({ ...prev, role: role.value }))}
                     className={`p-3 rounded-lg border-2 text-left transition-all ${
                       form.role === role.value
-                        ? 'border-primary-500 bg-primary-50'
-                        : 'border-slate-200 hover:border-slate-300'
+                        ? 'border-primary-500 bg-primary-50 dark:bg-primary-900/30'
+                        : 'border-slate-200 dark:border-slate-600 hover:border-slate-300 dark:hover:border-slate-500'
                     }`}
                   >
                     <span
                       className={`block text-sm font-medium ${
-                        form.role === role.value ? 'text-primary-700' : 'text-slate-700'
+                        form.role === role.value
+                          ? 'text-primary-700 dark:text-primary-300'
+                          : 'text-slate-700 dark:text-slate-300'
                       }`}
                     >
                       {role.label}
                     </span>
-                    <span className="block text-xs text-slate-500 mt-0.5">{role.desc}</span>
+                    <span className="block text-xs text-slate-500 dark:text-slate-400 mt-0.5">{role.desc}</span>
                   </button>
                 ))}
               </div>
@@ -176,9 +178,9 @@ export default function Register() {
             </button>
           </form>
 
-          <p className="mt-6 text-center text-sm text-slate-500">
+          <p className="mt-6 text-center text-sm text-slate-500 dark:text-slate-400">
             Already have an account?{' '}
-            <Link to="/login" className="font-medium text-primary-600 hover:text-primary-700">
+            <Link to="/login" className="font-medium text-primary-600 hover:text-primary-700 dark:text-primary-400 dark:hover:text-primary-300">
               Sign in
             </Link>
           </p>

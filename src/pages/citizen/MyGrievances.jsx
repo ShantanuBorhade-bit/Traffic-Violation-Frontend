@@ -5,7 +5,7 @@ import StatusBadge from '../../components/StatusBadge';
 import EmptyState from '../../components/EmptyState';
 import Spinner from '../../components/Spinner';
 import { format } from 'date-fns';
-import { AlertCircle, Plus, ArrowRight, Search } from 'lucide-react';
+import { AlertCircle, Plus, ArrowRight } from 'lucide-react';
 
 export default function MyGrievances() {
   const [grievances, setGrievances] = useState([]);
@@ -43,8 +43,10 @@ export default function MyGrievances() {
     <div className="space-y-6">
       <div className="flex items-center justify-between">
         <div>
-          <h1 className="text-2xl font-bold text-slate-900">My Grievances</h1>
-          <p className="text-slate-500 mt-1">Track and manage your filed grievances</p>
+          <h1 className="text-2xl font-bold text-slate-900 dark:text-white">My Grievances</h1>
+          <p className="text-slate-500 dark:text-slate-400 mt-1">
+            Track and manage your filed grievances
+          </p>
         </div>
         <Link to="/citizen/grievances/new" className="btn-primary">
           <Plus className="h-4 w-4" />
@@ -60,8 +62,8 @@ export default function MyGrievances() {
             onClick={() => setFilter(status)}
             className={`px-3 py-1.5 text-sm font-medium rounded-lg transition-colors ${
               filter === status
-                ? 'bg-primary-100 text-primary-700'
-                : 'bg-white text-slate-600 border border-slate-200 hover:bg-slate-50'
+                ? 'bg-primary-100 dark:bg-primary-900/40 text-primary-700 dark:text-primary-300'
+                : 'bg-white dark:bg-slate-800 text-slate-600 dark:text-slate-400 border border-slate-200 dark:border-slate-600 hover:bg-slate-50 dark:hover:bg-slate-700'
             }`}
           >
             {status === 'ALL' ? 'All' : status.replace('_', ' ')}
@@ -74,7 +76,11 @@ export default function MyGrievances() {
         <EmptyState
           icon={AlertCircle}
           title="No grievances found"
-          description={filter === 'ALL' ? "You haven't filed any grievances yet." : `No grievances with status "${filter}".`}
+          description={
+            filter === 'ALL'
+              ? "You haven't filed any grievances yet."
+              : `No grievances with status "${filter}".`
+          }
           action={
             <Link to="/citizen/grievances/new" className="btn-primary text-sm">
               <Plus className="h-4 w-4" />
@@ -96,10 +102,10 @@ export default function MyGrievances() {
                     <StatusBadge status={g.status} />
                     <StatusBadge status={g.reason} />
                   </div>
-                  <p className="text-sm text-slate-600 mb-2">
+                  <p className="text-sm text-slate-600 dark:text-slate-300 mb-2">
                     {g.description || 'No description provided'}
                   </p>
-                  <div className="flex items-center gap-4 text-xs text-slate-400">
+                  <div className="flex items-center gap-4 text-xs text-slate-400 dark:text-slate-500">
                     {g.challan?.challanNumber && (
                       <span>Challan: {g.challan.challanNumber}</span>
                     )}

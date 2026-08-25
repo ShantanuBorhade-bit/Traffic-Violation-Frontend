@@ -48,11 +48,12 @@ export default function OfficerGrievances() {
   return (
     <div className="space-y-6">
       <div>
-        <h1 className="text-2xl font-bold text-slate-900">Grievance Reviews</h1>
-        <p className="text-slate-500 mt-1">Review and manage citizen grievances</p>
+        <h1 className="text-2xl font-bold text-slate-900 dark:text-white">Grievance Reviews</h1>
+        <p className="text-slate-500 dark:text-slate-400 mt-1">
+          Review and manage citizen grievances
+        </p>
       </div>
 
-      {/* Search */}
       <div className="relative max-w-md">
         <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-slate-400" />
         <input
@@ -64,7 +65,6 @@ export default function OfficerGrievances() {
         />
       </div>
 
-      {/* Filters */}
       <div className="flex gap-2 flex-wrap">
         {['ALL', 'PENDING', 'UNDER_REVIEW', 'APPROVED', 'REJECTED'].map((status) => (
           <button
@@ -72,8 +72,8 @@ export default function OfficerGrievances() {
             onClick={() => setFilter(status)}
             className={`px-3 py-1.5 text-sm font-medium rounded-lg transition-colors ${
               filter === status
-                ? 'bg-primary-100 text-primary-700'
-                : 'bg-white text-slate-600 border border-slate-200 hover:bg-slate-50'
+                ? 'bg-primary-100 dark:bg-primary-900/40 text-primary-700 dark:text-primary-300'
+                : 'bg-white dark:bg-slate-800 text-slate-600 dark:text-slate-400 border border-slate-200 dark:border-slate-600 hover:bg-slate-50 dark:hover:bg-slate-700'
             }`}
           >
             {status === 'ALL' ? 'All' : status.replace('_', ' ')}
@@ -81,12 +81,15 @@ export default function OfficerGrievances() {
         ))}
       </div>
 
-      {/* List */}
       {filtered.length === 0 ? (
         <EmptyState
           icon={AlertCircle}
           title="No grievances found"
-          description={search ? 'Try a different search term.' : 'No grievances match the selected filter.'}
+          description={
+            search
+              ? 'Try a different search term.'
+              : 'No grievances match the selected filter.'
+          }
         />
       ) : (
         <div className="space-y-3">
@@ -102,13 +105,13 @@ export default function OfficerGrievances() {
                     <StatusBadge status={g.status} />
                     <StatusBadge status={g.reason} />
                   </div>
-                  <p className="text-sm font-medium text-slate-700 mb-1">
+                  <p className="text-sm font-medium text-slate-700 dark:text-slate-200 mb-1">
                     {g.citizen?.fullName || 'Unknown citizen'}
                   </p>
-                  <p className="text-sm text-slate-500 mb-2">
+                  <p className="text-sm text-slate-500 dark:text-slate-400 mb-2">
                     {g.description || 'No description provided'}
                   </p>
-                  <div className="flex items-center gap-4 text-xs text-slate-400">
+                  <div className="flex items-center gap-4 text-xs text-slate-400 dark:text-slate-500">
                     {g.challan?.challanNumber && (
                       <span>Challan: {g.challan.challanNumber}</span>
                     )}

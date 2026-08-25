@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
 import { grievanceAPI } from '../../api/client';
-import { Loader2, Upload, ArrowLeft, AlertCircle, FileWarning } from 'lucide-react';
+import { Loader2, Upload, ArrowLeft, AlertCircle, FileWarning, CheckCircle2 } from 'lucide-react';
 
 const REASONS = [
   { value: 'FALSE_DETECTION', label: 'False Detection', desc: 'The violation was not actually committed' },
@@ -46,11 +46,13 @@ export default function FileGrievance() {
   if (success) {
     return (
       <div className="max-w-lg mx-auto text-center py-20">
-        <div className="p-4 bg-success-100 rounded-2xl w-fit mx-auto mb-6">
-          <AlertCircle className="h-10 w-10 text-success-600" />
+        <div className="p-4 bg-success-100 dark:bg-success-900/30 rounded-2xl w-fit mx-auto mb-6">
+          <CheckCircle2 className="h-10 w-10 text-success-600 dark:text-success-400" />
         </div>
-        <h2 className="text-2xl font-bold text-slate-900 mb-2">Grievance Filed!</h2>
-        <p className="text-slate-500">
+        <h2 className="text-2xl font-bold text-slate-900 dark:text-white mb-2">
+          Grievance Filed!
+        </h2>
+        <p className="text-slate-500 dark:text-slate-400">
           Your grievance has been submitted successfully. Redirecting to your grievances...
         </p>
       </div>
@@ -62,18 +64,20 @@ export default function FileGrievance() {
       <div>
         <Link
           to="/citizen/grievances"
-          className="inline-flex items-center gap-1.5 text-sm text-slate-500 hover:text-slate-700 mb-4"
+          className="inline-flex items-center gap-1.5 text-sm text-slate-500 dark:text-slate-400 hover:text-slate-700 dark:hover:text-slate-200 mb-4"
         >
           <ArrowLeft className="h-4 w-4" />
           Back to grievances
         </Link>
-        <h1 className="text-2xl font-bold text-slate-900">File a Grievance</h1>
-        <p className="text-slate-500 mt-1">Dispute a challan by providing your reason and evidence</p>
+        <h1 className="text-2xl font-bold text-slate-900 dark:text-white">File a Grievance</h1>
+        <p className="text-slate-500 dark:text-slate-400 mt-1">
+          Dispute a challan by providing your reason and evidence
+        </p>
       </div>
 
       <div className="card p-6">
         {error && (
-          <div className="mb-4 p-3 bg-danger-50 border border-danger-200 text-danger-700 text-sm rounded-lg">
+          <div className="mb-4 p-3 bg-danger-50 dark:bg-danger-900/20 border border-danger-200 dark:border-danger-800 text-danger-700 dark:text-danger-400 text-sm rounded-lg">
             {error}
           </div>
         )}
@@ -89,7 +93,7 @@ export default function FileGrievance() {
               onChange={(e) => setChallanId(e.target.value)}
               required
             />
-            <p className="text-xs text-slate-400 mt-1">
+            <p className="text-xs text-slate-400 dark:text-slate-500 mt-1">
               You can find this on your challan notice
             </p>
           </div>
@@ -104,18 +108,22 @@ export default function FileGrievance() {
                   onClick={() => setReason(r.value)}
                   className={`p-3 rounded-lg border-2 text-left transition-all ${
                     reason === r.value
-                      ? 'border-primary-500 bg-primary-50'
-                      : 'border-slate-200 hover:border-slate-300'
+                      ? 'border-primary-500 bg-primary-50 dark:bg-primary-900/30'
+                      : 'border-slate-200 dark:border-slate-600 hover:border-slate-300 dark:hover:border-slate-500'
                   }`}
                 >
                   <span
                     className={`block text-sm font-medium ${
-                      reason === r.value ? 'text-primary-700' : 'text-slate-700'
+                      reason === r.value
+                        ? 'text-primary-700 dark:text-primary-300'
+                        : 'text-slate-700 dark:text-slate-300'
                     }`}
                   >
                     {r.label}
                   </span>
-                  <span className="block text-xs text-slate-500 mt-0.5">{r.desc}</span>
+                  <span className="block text-xs text-slate-500 dark:text-slate-400 mt-0.5">
+                    {r.desc}
+                  </span>
                 </button>
               ))}
             </div>
@@ -130,12 +138,14 @@ export default function FileGrievance() {
               onChange={(e) => setDescription(e.target.value)}
               maxLength={500}
             />
-            <p className="text-xs text-slate-400 mt-1">{description.length}/500 characters</p>
+            <p className="text-xs text-slate-400 dark:text-slate-500 mt-1">
+              {description.length}/500 characters
+            </p>
           </div>
 
           <div>
             <label className="input-label">Supporting Evidence (optional)</label>
-            <div className="border-2 border-dashed border-slate-300 rounded-xl p-6 text-center hover:border-primary-400 transition-colors">
+            <div className="border-2 border-dashed border-slate-300 dark:border-slate-600 rounded-xl p-6 text-center hover:border-primary-400 transition-colors">
               <input
                 type="file"
                 accept="image/*"
@@ -148,8 +158,10 @@ export default function FileGrievance() {
                   <div className="flex items-center justify-center gap-3">
                     <FileWarning className="h-8 w-8 text-primary-500" />
                     <div className="text-left">
-                      <p className="text-sm font-medium text-slate-700">{file.name}</p>
-                      <p className="text-xs text-slate-400">
+                      <p className="text-sm font-medium text-slate-700 dark:text-slate-200">
+                        {file.name}
+                      </p>
+                      <p className="text-xs text-slate-400 dark:text-slate-500">
                         {(file.size / 1024 / 1024).toFixed(2)} MB
                       </p>
                     </div>
@@ -157,8 +169,12 @@ export default function FileGrievance() {
                 ) : (
                   <div>
                     <Upload className="h-8 w-8 text-slate-400 mx-auto mb-2" />
-                    <p className="text-sm text-slate-600">Click to upload an image</p>
-                    <p className="text-xs text-slate-400">PNG, JPG up to 5MB</p>
+                    <p className="text-sm text-slate-600 dark:text-slate-300">
+                      Click to upload an image
+                    </p>
+                    <p className="text-xs text-slate-400 dark:text-slate-500">
+                      PNG, JPG up to 5MB
+                    </p>
                   </div>
                 )}
               </label>

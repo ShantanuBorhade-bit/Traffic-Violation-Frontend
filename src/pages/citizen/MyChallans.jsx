@@ -13,15 +13,12 @@ import {
   AlertTriangle,
   Clock,
   Calendar,
-  Car,
-  MapPin,
   Camera,
-  ArrowRight,
+  ArrowLeft,
   ChevronDown,
   ChevronUp,
   Search,
   AlertCircle,
-  ArrowLeft,
 } from 'lucide-react';
 import clsx from 'clsx';
 
@@ -49,43 +46,43 @@ const VIOLATION_ICONS = {
 
 function ChallanCard({ challan }) {
   const [expanded, setExpanded] = useState(false);
-  const isOverdue = challan.status === 'ISSUED' || challan.status === 'PENDING_PAYMENT'
-    ? isPast(new Date(challan.dueDate))
-    : false;
+  const isOverdue =
+    (challan.status === 'ISSUED' || challan.status === 'PENDING_PAYMENT') &&
+    isPast(new Date(challan.dueDate));
 
   return (
     <div className="card overflow-hidden">
-      {/* Main row */}
       <button
         onClick={() => setExpanded(!expanded)}
-        className="w-full flex items-center gap-4 p-5 text-left hover:bg-slate-50 transition-colors"
+        className="w-full flex items-center gap-4 p-5 text-left hover:bg-slate-50 dark:hover:bg-slate-700/50 transition-colors"
       >
-        {/* Violation icon */}
         <div className="text-2xl flex-shrink-0 w-10 text-center">
           {VIOLATION_ICONS[challan.violation?.violationType] || '📋'}
         </div>
 
-        {/* Info */}
         <div className="flex-1 min-w-0">
           <div className="flex items-center gap-2 mb-1 flex-wrap">
-            <span className="text-sm font-mono font-semibold text-slate-800">
+            <span className="text-sm font-mono font-semibold text-slate-800 dark:text-slate-200">
               {challan.challanNumber}
             </span>
             <StatusBadge status={challan.status} />
             {isOverdue && (
-              <span className="inline-flex items-center gap-1 px-2 py-0.5 bg-danger-100 text-danger-700 text-xs font-medium rounded-full">
+              <span className="inline-flex items-center gap-1 px-2 py-0.5 bg-danger-100 dark:bg-danger-900/40 text-danger-700 dark:text-danger-400 text-xs font-medium rounded-full">
                 <AlertTriangle className="h-3 w-3" />
                 Overdue
               </span>
             )}
           </div>
-          <p className="text-sm text-slate-600">
+          <p className="text-sm text-slate-600 dark:text-slate-300">
             {VIOLATION_LABELS[challan.violation?.violationType] || 'Traffic Violation'}
             {challan.vehicle?.registrationNumber && (
-              <span className="text-slate-400"> · {challan.vehicle.registrationNumber}</span>
+              <span className="text-slate-400 dark:text-slate-500">
+                {' '}
+                · {challan.vehicle.registrationNumber}
+              </span>
             )}
           </p>
-          <div className="flex items-center gap-3 text-xs text-slate-400 mt-1">
+          <div className="flex items-center gap-3 text-xs text-slate-400 dark:text-slate-500 mt-1">
             <span className="flex items-center gap-1">
               <Calendar className="h-3 w-3" />
               Issued {format(new Date(challan.issuedAt), 'MMM d, yyyy')}
@@ -97,47 +94,50 @@ function ChallanCard({ challan }) {
           </div>
         </div>
 
-        {/* Fine amount */}
         <div className="text-right flex-shrink-0">
-          <p className="text-lg font-bold text-slate-900">
+          <p className="text-lg font-bold text-slate-900 dark:text-white">
             ₹{parseFloat(challan.fineAmount).toLocaleString()}
           </p>
-          <p className="text-xs text-slate-400">fine</p>
+          <p className="text-xs text-slate-400 dark:text-slate-500">fine</p>
         </div>
 
-        {/* Expand arrow */}
         <div className="flex-shrink-0 text-slate-400">
           {expanded ? <ChevronUp className="h-5 w-5" /> : <ChevronDown className="h-5 w-5" />}
         </div>
       </button>
 
-      {/* Expanded details */}
       {expanded && (
-        <div className="border-t border-slate-100 bg-slate-50 px-5 py-4">
+        <div className="border-t border-slate-100 dark:border-slate-700 bg-slate-50 dark:bg-slate-700/30 px-5 py-4">
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 mb-4">
-            {/* Challan details */}
             <div className="space-y-3">
-              <h4 className="text-xs font-semibold text-slate-500 uppercase tracking-wider">
+              <h4 className="text-xs font-semibold text-slate-500 dark:text-slate-400 uppercase tracking-wider">
                 Challan Details
               </h4>
               <div className="grid grid-cols-2 gap-3">
                 <div>
-                  <p className="text-xs text-slate-400">Challan Number</p>
-                  <p className="text-sm font-medium text-slate-700 font-mono">{challan.challanNumber}</p>
+                  <p className="text-xs text-slate-400 dark:text-slate-500">Challan Number</p>
+                  <p className="text-sm font-medium text-slate-700 dark:text-slate-200 font-mono">
+                    {challan.challanNumber}
+                  </p>
                 </div>
                 <div>
-                  <p className="text-xs text-slate-400">Fine Amount</p>
-                  <p className="text-sm font-bold text-danger-600">
+                  <p className="text-xs text-slate-400 dark:text-slate-500">Fine Amount</p>
+                  <p className="text-sm font-bold text-danger-600 dark:text-danger-400">
                     ₹{parseFloat(challan.fineAmount).toLocaleString()}
                   </p>
                 </div>
                 <div>
-                  <p className="text-xs text-slate-400">Status</p>
+                  <p className="text-xs text-slate-400 dark:text-slate-500">Status</p>
                   <StatusBadge status={challan.status} />
                 </div>
                 <div>
-                  <p className="text-xs text-slate-400">Due Date</p>
-                  <p className={clsx('text-sm font-medium', isOverdue ? 'text-danger-600' : 'text-slate-700')}>
+                  <p className="text-xs text-slate-400 dark:text-slate-500">Due Date</p>
+                  <p
+                    className={clsx(
+                      'text-sm font-medium',
+                      isOverdue ? 'text-danger-600 dark:text-danger-400' : 'text-slate-700 dark:text-slate-200'
+                    )}
+                  >
                     {format(new Date(challan.dueDate), 'MMM d, yyyy')}
                     {isOverdue && (
                       <span className="text-xs text-danger-500 ml-1">
@@ -148,8 +148,8 @@ function ChallanCard({ challan }) {
                 </div>
                 {challan.paidAt && (
                   <div>
-                    <p className="text-xs text-slate-400">Paid On</p>
-                    <p className="text-sm font-medium text-success-600">
+                    <p className="text-xs text-slate-400 dark:text-slate-500">Paid On</p>
+                    <p className="text-sm font-medium text-success-600 dark:text-success-400">
                       {format(new Date(challan.paidAt), 'MMM d, yyyy')}
                     </p>
                   </div>
@@ -157,62 +157,64 @@ function ChallanCard({ challan }) {
               </div>
             </div>
 
-            {/* Violation details */}
             <div className="space-y-3">
-              <h4 className="text-xs font-semibold text-slate-500 uppercase tracking-wider">
+              <h4 className="text-xs font-semibold text-slate-500 dark:text-slate-400 uppercase tracking-wider">
                 Violation Details
               </h4>
               {challan.violation ? (
                 <div className="grid grid-cols-2 gap-3">
                   <div>
-                    <p className="text-xs text-slate-400">Type</p>
-                    <p className="text-sm font-medium text-slate-700">
-                      {VIOLATION_LABELS[challan.violation.violationType] || challan.violation.violationType}
+                    <p className="text-xs text-slate-400 dark:text-slate-500">Type</p>
+                    <p className="text-sm font-medium text-slate-700 dark:text-slate-200">
+                      {VIOLATION_LABELS[challan.violation.violationType] ||
+                        challan.violation.violationType}
                     </p>
                   </div>
                   <div>
-                    <p className="text-xs text-slate-400">Plate Number</p>
-                    <p className="text-sm font-medium text-slate-700 font-mono">
+                    <p className="text-xs text-slate-400 dark:text-slate-500">Plate Number</p>
+                    <p className="text-sm font-medium text-slate-700 dark:text-slate-200 font-mono">
                       {challan.violation.detectedPlate}
                     </p>
                   </div>
                   {challan.violation.cameraId && (
-                    <div>
-                      <p className="text-xs text-slate-400">Camera</p>
-                      <p className="text-sm font-medium text-slate-700">{challan.violation.cameraId}</p>
+                    <div className="col-span-2">
+                      <p className="text-xs text-slate-400 dark:text-slate-500">Camera</p>
+                      <p className="text-sm font-medium text-slate-700 dark:text-slate-200">
+                        {challan.violation.cameraId}
+                      </p>
                     </div>
                   )}
                   {challan.violation.locationText && (
                     <div className="col-span-2">
-                      <p className="text-xs text-slate-400">Location</p>
-                      <p className="text-sm font-medium text-slate-700 flex items-center gap-1">
-                        <MapPin className="h-3 w-3" />
-                        {challan.violation.locationText}
+                      <p className="text-xs text-slate-400 dark:text-slate-500">Location</p>
+                      <p className="text-sm font-medium text-slate-700 dark:text-slate-200">
+                        📍 {challan.violation.locationText}
                       </p>
                     </div>
                   )}
                   {challan.violation.detectedAt && (
                     <div className="col-span-2">
-                      <p className="text-xs text-slate-400">Detected At</p>
-                      <p className="text-sm font-medium text-slate-700">
+                      <p className="text-xs text-slate-400 dark:text-slate-500">Detected At</p>
+                      <p className="text-sm font-medium text-slate-700 dark:text-slate-200">
                         {format(new Date(challan.violation.detectedAt), 'MMM d, yyyy h:mm a')}
                       </p>
                     </div>
                   )}
                 </div>
               ) : (
-                <p className="text-sm text-slate-500">No violation data available</p>
+                <p className="text-sm text-slate-500 dark:text-slate-400">
+                  No violation data available
+                </p>
               )}
             </div>
           </div>
 
-          {/* Evidence image */}
           {challan.violation?.evidence?.imageUrl && (
             <div className="mt-4">
-              <h4 className="text-xs font-semibold text-slate-500 uppercase tracking-wider mb-2">
+              <h4 className="text-xs font-semibold text-slate-500 dark:text-slate-400 uppercase tracking-wider mb-2">
                 Evidence
               </h4>
-              <div className="relative rounded-xl overflow-hidden border border-slate-200 max-w-md">
+              <div className="relative rounded-xl overflow-hidden border border-slate-200 dark:border-slate-600 max-w-md">
                 <img
                   src={challan.violation.evidence.imageUrl}
                   alt="Violation evidence"
@@ -226,8 +228,7 @@ function ChallanCard({ challan }) {
             </div>
           )}
 
-          {/* Actions */}
-          <div className="flex items-center gap-3 mt-4 pt-4 border-t border-slate-200">
+          <div className="flex items-center gap-3 mt-4 pt-4 border-t border-slate-200 dark:border-slate-600">
             {(challan.status === 'ISSUED' || challan.status === 'PENDING_PAYMENT') && (
               <Link
                 to={`/citizen/grievances/new?challanId=${challan.id}`}
@@ -238,19 +239,19 @@ function ChallanCard({ challan }) {
               </Link>
             )}
             {challan.status === 'DISPUTED' && (
-              <span className="text-sm text-warning-600 font-medium flex items-center gap-1">
+              <span className="text-sm text-warning-600 dark:text-warning-400 font-medium flex items-center gap-1">
                 <AlertTriangle className="h-4 w-4" />
                 Under grievance review
               </span>
             )}
             {challan.status === 'PAID' && (
-              <span className="text-sm text-success-600 font-medium flex items-center gap-1">
+              <span className="text-sm text-success-600 dark:text-success-400 font-medium flex items-center gap-1">
                 <CheckCircle2 className="h-4 w-4" />
                 Payment confirmed
               </span>
             )}
             {challan.status === 'CANCELLED' && (
-              <span className="text-sm text-slate-500 font-medium flex items-center gap-1">
+              <span className="text-sm text-slate-500 dark:text-slate-400 font-medium flex items-center gap-1">
                 <CheckCircle2 className="h-4 w-4" />
                 Challan cancelled
               </span>
@@ -276,9 +277,10 @@ export default function MyChallans() {
         const res = await citizenChallanAPI.getMyChallans();
         setChallans(res.data.challans || []);
       } catch (err) {
-        // If endpoint doesn't exist yet, show graceful message
         if (err.response?.status === 404) {
-          setError('Challan listing is not yet available. The backend endpoint /api/v1/challans/my needs to be implemented.');
+          setError(
+            'Challan listing is not yet available. The backend endpoint /api/v1/challans/my needs to be implemented.'
+          );
         } else {
           setError(err.response?.data?.message || 'Failed to load challans');
         }
@@ -289,7 +291,6 @@ export default function MyChallans() {
     fetchChallans();
   }, []);
 
-  // Filter and sort
   const filtered = challans
     .filter((c) => filter === 'ALL' || c.status === filter)
     .filter(
@@ -306,15 +307,13 @@ export default function MyChallans() {
       return 0;
     });
 
-  // Stats
   const totalFines = challans
     .filter((c) => c.status === 'ISSUED' || c.status === 'PENDING_PAYMENT')
     .reduce((sum, c) => sum + parseFloat(c.fineAmount || 0), 0);
   const paidCount = challans.filter((c) => c.status === 'PAID').length;
   const overdueCount = challans.filter(
     (c) =>
-      (c.status === 'ISSUED' || c.status === 'PENDING_PAYMENT') &&
-      isPast(new Date(c.dueDate))
+      (c.status === 'ISSUED' || c.status === 'PENDING_PAYMENT') && isPast(new Date(c.dueDate))
   ).length;
 
   if (loading) {
@@ -327,27 +326,32 @@ export default function MyChallans() {
 
   return (
     <div className="space-y-6">
-      {/* Header */}
       <div>
         <Link
           to="/citizen"
-          className="inline-flex items-center gap-1.5 text-sm text-slate-500 hover:text-slate-700 mb-4"
+          className="inline-flex items-center gap-1.5 text-sm text-slate-500 dark:text-slate-400 hover:text-slate-700 dark:hover:text-slate-200 mb-4"
         >
           <ArrowLeft className="h-4 w-4" />
           Dashboard
         </Link>
-        <h1 className="text-2xl font-bold text-slate-900">My Challans</h1>
-        <p className="text-slate-500 mt-1">View all traffic violation challans issued against your vehicles</p>
+        <h1 className="text-2xl font-bold text-slate-900 dark:text-white">My Challans</h1>
+        <p className="text-slate-500 dark:text-slate-400 mt-1">
+          View all traffic violation challans issued against your vehicles
+        </p>
       </div>
 
       {error ? (
         <div className="card p-8 text-center">
-          <div className="p-4 bg-warning-50 rounded-2xl w-fit mx-auto mb-4">
+          <div className="p-4 bg-warning-50 dark:bg-warning-900/30 rounded-2xl w-fit mx-auto mb-4">
             <AlertTriangle className="h-10 w-10 text-warning-500" />
           </div>
-          <h3 className="text-lg font-semibold text-slate-700 mb-2">Endpoint Not Available</h3>
-          <p className="text-sm text-slate-500 max-w-md mx-auto mb-4">{error}</p>
-          <p className="text-xs text-slate-400 bg-slate-100 rounded-lg p-3 max-w-lg mx-auto font-mono">
+          <h3 className="text-lg font-semibold text-slate-700 dark:text-slate-200 mb-2">
+            Endpoint Not Available
+          </h3>
+          <p className="text-sm text-slate-500 dark:text-slate-400 max-w-md mx-auto mb-4">
+            {error}
+          </p>
+          <p className="text-xs text-slate-400 dark:text-slate-500 bg-slate-100 dark:bg-slate-700 rounded-lg p-3 max-w-lg mx-auto font-mono">
             Add this route to your backend:
             <br />
             GET /api/v1/challans/my
@@ -357,7 +361,6 @@ export default function MyChallans() {
         </div>
       ) : (
         <>
-          {/* Stats */}
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
             <StatCard icon={FileWarning} label="Total Challans" value={challans.length} color="primary" />
             <StatCard
@@ -367,15 +370,9 @@ export default function MyChallans() {
               color="danger"
             />
             <StatCard icon={CheckCircle2} label="Paid" value={paidCount} color="success" />
-            <StatCard
-              icon={AlertTriangle}
-              label="Overdue"
-              value={overdueCount}
-              color="warning"
-            />
+            <StatCard icon={AlertTriangle} label="Overdue" value={overdueCount} color="warning" />
           </div>
 
-          {/* Search and filters */}
           <div className="flex flex-col sm:flex-row gap-3">
             <div className="relative flex-1 max-w-md">
               <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-slate-400" />
@@ -410,7 +407,6 @@ export default function MyChallans() {
             </select>
           </div>
 
-          {/* Challan list */}
           {filtered.length === 0 ? (
             <EmptyState
               icon={FileWarning}

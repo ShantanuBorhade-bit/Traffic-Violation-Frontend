@@ -3,25 +3,16 @@ import StatusBadge from '../../components/StatusBadge';
 import EmptyState from '../../components/EmptyState';
 import { FileWarning, Search } from 'lucide-react';
 
-const MOCK_VIOLATIONS = [
-  // Placeholder - will be populated from API when endpoints are available
-];
-
 const VIOLATION_TYPES = [
-  'NO_HELMET',
-  'NO_SEATBELT',
-  'RED_LIGHT_JUMP',
-  'SPEEDING',
-  'WRONG_SIDE',
-  'ILLEGAL_PARKING',
-  'LANE_VIOLATION',
+  'NO_HELMET', 'NO_SEATBELT', 'RED_LIGHT_JUMP', 'SPEEDING',
+  'WRONG_SIDE', 'ILLEGAL_PARKING', 'LANE_VIOLATION',
 ];
 
 export default function AdminViolations() {
   const [search, setSearch] = useState('');
   const [typeFilter, setTypeFilter] = useState('ALL');
   const [statusFilter, setStatusFilter] = useState('ALL');
-  const violations = MOCK_VIOLATIONS;
+  const violations = [];
 
   const filtered = violations
     .filter((v) => typeFilter === 'ALL' || v.violationType === typeFilter)
@@ -36,11 +27,12 @@ export default function AdminViolations() {
   return (
     <div className="space-y-6">
       <div>
-        <h1 className="text-2xl font-bold text-slate-900">Violations</h1>
-        <p className="text-slate-500 mt-1">All traffic violations detected by the ML system</p>
+        <h1 className="text-2xl font-bold text-slate-900 dark:text-white">Violations</h1>
+        <p className="text-slate-500 dark:text-slate-400 mt-1">
+          All traffic violations detected by the ML system
+        </p>
       </div>
 
-      {/* Filters */}
       <div className="flex flex-col sm:flex-row gap-3">
         <div className="relative flex-1 max-w-md">
           <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-slate-400" />
@@ -59,9 +51,7 @@ export default function AdminViolations() {
         >
           <option value="ALL">All Types</option>
           {VIOLATION_TYPES.map((t) => (
-            <option key={t} value={t}>
-              {t.replace(/_/g, ' ')}
-            </option>
+            <option key={t} value={t}>{t.replace(/_/g, ' ')}</option>
           ))}
         </select>
         <select
@@ -78,46 +68,33 @@ export default function AdminViolations() {
         </select>
       </div>
 
-      {/* Table or Empty State */}
       {filtered.length === 0 ? (
         <EmptyState
           icon={FileWarning}
           title="No violations found"
-          description="Violations detected by the ML model will appear here. The backend violation listing API may need to be implemented."
+          description="Violations detected by the ML model will appear here."
         />
       ) : (
         <div className="card overflow-hidden">
           <div className="overflow-x-auto">
             <table className="w-full">
               <thead>
-                <tr className="bg-slate-50 border-b border-slate-200">
-                  <th className="text-left text-xs font-semibold text-slate-500 uppercase tracking-wider px-6 py-3">
-                    Type
-                  </th>
-                  <th className="text-left text-xs font-semibold text-slate-500 uppercase tracking-wider px-6 py-3">
-                    Plate
-                  </th>
-                  <th className="text-left text-xs font-semibold text-slate-500 uppercase tracking-wider px-6 py-3">
-                    Camera
-                  </th>
-                  <th className="text-left text-xs font-semibold text-slate-500 uppercase tracking-wider px-6 py-3">
-                    Status
-                  </th>
-                  <th className="text-left text-xs font-semibold text-slate-500 uppercase tracking-wider px-6 py-3">
-                    Detected At
-                  </th>
+                <tr className="bg-slate-50 dark:bg-slate-700/50 border-b border-slate-200 dark:border-slate-700">
+                  <th className="text-left text-xs font-semibold text-slate-500 dark:text-slate-400 uppercase tracking-wider px-6 py-3">Type</th>
+                  <th className="text-left text-xs font-semibold text-slate-500 dark:text-slate-400 uppercase tracking-wider px-6 py-3">Plate</th>
+                  <th className="text-left text-xs font-semibold text-slate-500 dark:text-slate-400 uppercase tracking-wider px-6 py-3">Camera</th>
+                  <th className="text-left text-xs font-semibold text-slate-500 dark:text-slate-400 uppercase tracking-wider px-6 py-3">Status</th>
+                  <th className="text-left text-xs font-semibold text-slate-500 dark:text-slate-400 uppercase tracking-wider px-6 py-3">Detected At</th>
                 </tr>
               </thead>
-              <tbody className="divide-y divide-slate-100">
+              <tbody className="divide-y divide-slate-100 dark:divide-slate-700">
                 {filtered.map((v) => (
-                  <tr key={v.id} className="hover:bg-slate-50 transition-colors">
-                    <td className="px-6 py-4 text-sm font-medium text-slate-700">
-                      {v.violationType?.replace(/_/g, ' ')}
-                    </td>
-                    <td className="px-6 py-4 text-sm font-mono text-slate-600">{v.detectedPlate}</td>
-                    <td className="px-6 py-4 text-sm text-slate-600">{v.cameraId}</td>
+                  <tr key={v.id} className="hover:bg-slate-50 dark:hover:bg-slate-700/50 transition-colors">
+                    <td className="px-6 py-4 text-sm font-medium text-slate-700 dark:text-slate-200">{v.violationType?.replace(/_/g, ' ')}</td>
+                    <td className="px-6 py-4 text-sm font-mono text-slate-600 dark:text-slate-300">{v.detectedPlate}</td>
+                    <td className="px-6 py-4 text-sm text-slate-600 dark:text-slate-300">{v.cameraId}</td>
                     <td className="px-6 py-4"><StatusBadge status={v.status} /></td>
-                    <td className="px-6 py-4 text-sm text-slate-500">{v.detectedAt}</td>
+                    <td className="px-6 py-4 text-sm text-slate-500 dark:text-slate-400">{v.detectedAt}</td>
                   </tr>
                 ))}
               </tbody>
