@@ -10,6 +10,7 @@ import {
   LogOut,
   BadgeCheck,
   Car,
+  Camera,
 } from 'lucide-react';
 import clsx from 'clsx';
 
@@ -19,7 +20,13 @@ const CITIZEN_NAV = [
   { to: '/citizen/grievances', icon: AlertCircle, label: 'My Grievances' },
 ];
 
-const OFFICER_NAV = [
+const TRAFFIC_OFFICER_NAV = [
+  { to: '/officer', icon: LayoutDashboard, label: 'Dashboard', end: true },
+  { to: '/officer/upload', icon: Camera, label: 'Upload Violation' },
+  { to: '/officer/uploads', icon: FileWarning, label: 'My Uploads' },
+];
+
+const GRIEVANCE_OFFICER_NAV = [
   { to: '/officer', icon: LayoutDashboard, label: 'Dashboard', end: true },
   { to: '/officer/grievances', icon: AlertCircle, label: 'Grievances' },
 ];
@@ -34,8 +41,8 @@ const ADMIN_NAV = [
 
 const ROLE_NAV = {
   CITIZEN: CITIZEN_NAV,
-  TRAFFIC_OFFICER: OFFICER_NAV,
-  GRIEVANCE_OFFICER: OFFICER_NAV,
+  TRAFFIC_OFFICER: TRAFFIC_OFFICER_NAV,
+  GRIEVANCE_OFFICER: GRIEVANCE_OFFICER_NAV,
   ADMIN: ADMIN_NAV,
 };
 
@@ -132,7 +139,7 @@ export default function Sidebar({ isOpen, onClose }) {
               logout();
               window.location.href = '/login';
             }}
-            className="flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium text-slate-600 dark:text-slate-400 hover:bg-danger-50 dark:hover:bg-danger-900/20 hover:text-danger-700 dark:hover:text-danger-400 transition-colors duration-150 w-full"
+            className="flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium text-slate-600 dark:text-slate-400 hover:bg-danger-50 dark:hover:bg-danger-900/20 hover:text-danger-700 dark:text-danger-400 transition-colors duration-150 w-full"
           >
             <LogOut className="h-5 w-5" />
             Sign Out

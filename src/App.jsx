@@ -21,6 +21,8 @@ const GrievanceDetail = lazy(() => import('./pages/citizen/GrievanceDetail'));
 const OfficerDashboard = lazy(() => import('./pages/officer/OfficerDashboard'));
 const OfficerGrievances = lazy(() => import('./pages/officer/OfficerGrievances'));
 const OfficerGrievanceDetail = lazy(() => import('./pages/officer/OfficerGrievanceDetail'));
+const UploadViolation = lazy(() => import('./pages/officer/UploadViolation'));
+const MyUploads = lazy(() => import('./pages/officer/MyUploads'));
 
 const AdminDashboard = lazy(() => import('./pages/admin/AdminDashboard'));
 const AdminViolations = lazy(() => import('./pages/admin/AdminViolations'));
@@ -116,9 +118,25 @@ function AnimatedRoutes() {
                 }
               />
               <Route
+                path="/officer/upload"
+                element={
+                  <ProtectedRoute allowedRoles={['TRAFFIC_OFFICER']}>
+                    <UploadViolation />
+                  </ProtectedRoute>
+                }
+              />
+              <Route
+                path="/officer/uploads"
+                element={
+                  <ProtectedRoute allowedRoles={['TRAFFIC_OFFICER']}>
+                    <MyUploads />
+                  </ProtectedRoute>
+                }
+              />
+              <Route
                 path="/officer/grievances"
                 element={
-                  <ProtectedRoute allowedRoles={['GRIEVANCE_OFFICER', 'TRAFFIC_OFFICER']}>
+                  <ProtectedRoute allowedRoles={['GRIEVANCE_OFFICER']}>
                     <OfficerGrievances />
                   </ProtectedRoute>
                 }
@@ -126,7 +144,7 @@ function AnimatedRoutes() {
               <Route
                 path="/officer/grievances/:id"
                 element={
-                  <ProtectedRoute allowedRoles={['GRIEVANCE_OFFICER', 'TRAFFIC_OFFICER']}>
+                  <ProtectedRoute allowedRoles={['GRIEVANCE_OFFICER']}>
                     <OfficerGrievanceDetail />
                   </ProtectedRoute>
                 }

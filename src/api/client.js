@@ -81,6 +81,16 @@ export const challanAPI = {
 export const adminUserAPI = {
   list: (params) => api.get('/admin/users', { params }),
   getById: (id) => api.get(`/admin/users/${id}`),
+  create: (data) => api.post('/admin/users', data),
+};
+
+// ── Manual Violations (Traffic Officer) ──
+export const manualViolationAPI = {
+  upload: (formData) =>
+    api.post('/officer/manual-violations', formData, {
+      headers: { 'Content-Type': 'multipart/form-data' },
+    }),
+  list: () => api.get('/officer/manual-violations'),
 };
 
 export default api;

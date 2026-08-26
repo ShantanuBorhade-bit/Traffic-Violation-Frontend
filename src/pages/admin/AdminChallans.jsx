@@ -1,12 +1,29 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
+import { challanAPI } from '../../api/client';
 import StatusBadge from '../../components/StatusBadge';
 import EmptyState from '../../components/EmptyState';
+import Spinner from '../../components/Spinner';
 import { BadgeCheck, Search } from 'lucide-react';
 
 export default function AdminChallans() {
+  const [challans, setChallans] = useState([]);
+  const [loading, setLoading] = useState(true);
   const [search, setSearch] = useState('');
   const [statusFilter, setStatusFilter] = useState('ALL');
-  const challans = [];
+
+  useEffect(() => {
+    async function fetchChallans() {
+      try {
+        const res = await challanAPI.list();
+        setChallans(res.data.challans || []);
+      } catch {
+        // endpoint may not exist yet
+      } finally {
+        setLoading(false);
+      }
+    }
+    fetchChallans();
+  }, []);
 
   const filtered = challans
     .filter((c) => statusFilter === 'ALL' || c.status === statusFilter)
@@ -16,6 +33,14 @@ export default function AdminChallans() {
         c.challanNumber?.toLowerCase().includes(search.toLowerCase()) ||
         c.vehicle?.registrationNumber?.toLowerCase().includes(search.toLowerCase())
     );
+
+  if (loading) {
+    return (
+      <div className="flex items-center justify-center py-20">
+        <Spinner size="lg" />
+      </div>
+    );
+  }
 
   return (
     <div className="space-y-6">
