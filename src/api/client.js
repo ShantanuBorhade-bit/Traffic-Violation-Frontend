@@ -36,6 +36,7 @@ export const authAPI = {
   register: (data) => api.post('/auth/register', data),
   login: (data) => api.post('/auth/login', data),
   getProfile: () => api.get('/auth/profile'),
+  updateProfile: (data) => api.put('/auth/profile', data),
 };
 
 // ── Challans (Citizen) ──
@@ -86,6 +87,10 @@ export const adminUserAPI = {
 
 // ── Manual Violations (Traffic Officer) ──
 export const manualViolationAPI = {
+  detectPlate: (formData) =>
+    api.post('/officer/detect-plate', formData, {
+      headers: { 'Content-Type': 'multipart/form-data' },
+    }),
   upload: (formData) =>
     api.post('/officer/manual-violations', formData, {
       headers: { 'Content-Type': 'multipart/form-data' },

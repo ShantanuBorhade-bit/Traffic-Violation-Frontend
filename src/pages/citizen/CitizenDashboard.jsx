@@ -18,6 +18,7 @@ import {
   CheckCircle2,
   Camera,
   AlertTriangle,
+  UserCog,
 } from 'lucide-react';
 
 const VIOLATION_ICONS = {
@@ -90,6 +91,24 @@ export default function CitizenDashboard() {
 
   return (
     <Stagger className="space-y-8">
+      {/* Profile Completion Banner */}
+      {!user?.profileComplete && (
+        <FadeIn>
+          <Link to="/profile" className="block p-4 bg-gradient-to-r from-warning-50 to-warning-100 dark:from-warning-900/20 dark:to-warning-800/20 border border-warning-300 dark:border-warning-700 rounded-xl hover:shadow-md transition-shadow">
+            <div className="flex items-center gap-3">
+              <div className="p-2 bg-warning-200 dark:bg-warning-800/40 rounded-lg">
+                <UserCog className="h-5 w-5 text-warning-700 dark:text-warning-400" />
+              </div>
+              <div className="flex-1">
+                <p className="text-sm font-semibold text-warning-800 dark:text-warning-300">Complete your profile</p>
+                <p className="text-xs text-warning-600 dark:text-warning-400">Add your vehicle number, address and license to activate your account</p>
+              </div>
+              <ArrowRight className="h-4 w-4 text-warning-500" />
+            </div>
+          </Link>
+        </FadeIn>
+      )}
+
       {/* Header */}
       <FadeIn>
         <div className="flex items-center justify-between">

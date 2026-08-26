@@ -1,7 +1,7 @@
-import { useState } from 'react';
-import { useNavigate, Link } from 'react-router-dom';
-import { grievanceAPI } from '../../api/client';
-import { Loader2, Upload, ArrowLeft, AlertCircle, FileWarning, CheckCircle2 } from 'lucide-react';
+import { useState, useEffect } from 'react';
+import { useNavigate, Link, useSearchParams } from 'react-router-dom';
+import { grievanceAPI, citizenChallanAPI } from '../../api/client';
+import { Loader2, Upload, ArrowLeft, AlertCircle, FileWarning, CheckCircle2, FileText, IndianRupee, Clock } from 'lucide-react';
 
 const REASONS = [
   { value: 'FALSE_DETECTION', label: 'False Detection', desc: 'The violation was not actually committed' },
@@ -11,15 +11,42 @@ const REASONS = [
   { value: 'OTHER', label: 'Other', desc: 'Any other reason not listed above' },
 ];
 
+const VIOLATION_LABELS = {
+  NO_HELMET: 'No Helmet', NO_SEATBELT: 'No Seatbelt',
+  RED_LIGHT_JUMP: 'Red Light Jump', SPEEDING: 'Speeding',
+  WRONG_SIDE: 'Wrong Side Driving', ILLEGAL_PARKING: 'Illegal Parking',
+  LANE_VIOLATION: 'Lane Violation', MORE_THAN_2_PEOPLE_ON_BIKE: 'More Than 2 on Bike',
+  MOBILE_PHONE_USAGE: 'Mobile Phone Usage',
+};
+
 export default function FileGrievance() {
   const navigate = useNavigate();
-  const [challanId, setChallanId] = useState('');
+  const [searchParams] = useSearchParams();
+  const challanIdFromUrl = searchParams.get('challanId') || '';
+
+  const [challanId, setChallanId] = useState(challanIdFromUrl);
+  const [challan, setChallan] = useState(null);
+  const [loadingChallan, setLoadingChallan] = useState(!!challanIdFromUrl);
   const [reason, setReason] = useState('');
   const [description, setDescription] = useState('');
   const [file, setFile] = useState(null);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
   const [success, setSuccess] = useState(false);
+
+  // Fetch challan details if ID is provided
+  useEffect(() => {
+    if (!challanIdFromUrl) return;
+    setLoadingChallan(true);
+    citizenChallanAPI.getById(challanIdFromUrl)
+      .then(res => {
+        const c = res.data.challan;
+        setChallan(c);
+        setChallanId(c.id);
+      })
+      .catch(() => setError('Challan not found'))
+      .finally(() => setLoadingChallan(false));
+  }, [challanIdFromUrl]);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -59,6 +86,8 @@ export default function FileGrievance() {
     );
   }
 
+  const inputClass = "w-full px-3 py-2 text-sm rounded-lg bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-600 text-slate-800 dark:text-slate-200 placeholder:text-slate-400 focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-primary-500 transition-all";
+
   return (
     <div className="max-w-2xl mx-auto space-y-6">
       <div>
@@ -75,28 +104,66 @@ export default function FileGrievance() {
         </p>
       </div>
 
+      {/* Challan Info Card (if loaded) */}
+      {loadingChallan && (
+        <div className="card p-6 flex items-center justify-center gap-2">
+          <Loader2 className="h-4 w-4 animate-spin text-primary-500" />
+          <span className="text-sm text-slate-500">Loading challan details...</span>
+        </div>
+      )}
+
+      {challan && (
+        <div className="card p-4 border-l-4 border-primary-500">
+          <div className="flex items-start gap-3">
+            <div className="p-2 bg-primary-100 dark:bg-primary-900/30 rounded-lg">
+              <FileText className="h-5 w-5 text-primary-600" />
+            </div>
+            <div className="flex-1">
+              <h3 className="text-sm font-semibold text-slate-800 dark:text-slate-200">
+                {challan.challanNumber}
+              </h3>
+              <p className="text-xs text-slate-500 mt-0.5">
+                {VIOLATION_LABELS[challan.violation?.violationType] || challan.violation?.violationType?.replace(/_/g, ' ')}
+              </p>
+              <div className="flex items-center gap-4 mt-2 text-xs text-slate-400">
+                <span className="flex items-center gap-1">
+                  <IndianRupee className="h-3 w-3" /> ₹{parseFloat(challan.fineAmount).toLocaleString()}
+                </span>
+                <span className="flex items-center gap-1">
+                  <Clock className="h-3 w-3" /> Due {new Date(challan.dueDate).toLocaleDateString()}
+                </span>
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
+
       <div className="card p-6">
         {error && (
-          <div className="mb-4 p-3 bg-danger-50 dark:bg-danger-900/20 border border-danger-200 dark:border-danger-800 text-danger-700 dark:text-danger-400 text-sm rounded-lg">
-            {error}
+          <div className="mb-4 p-3 bg-danger-50 dark:bg-danger-900/20 border border-danger-200 dark:border-danger-800 text-danger-700 dark:text-danger-400 text-sm rounded-lg flex items-center gap-2">
+            <AlertCircle className="h-4 w-4 flex-shrink-0" /> {error}
           </div>
         )}
 
         <form onSubmit={handleSubmit} className="space-y-5">
-          <div>
-            <label className="input-label">Challan ID *</label>
-            <input
-              type="text"
-              className="input"
-              placeholder="Enter the challan ID (UUID)"
-              value={challanId}
-              onChange={(e) => setChallanId(e.target.value)}
-              required
-            />
-            <p className="text-xs text-slate-400 dark:text-slate-500 mt-1">
-              You can find this on your challan notice
-            </p>
-          </div>
+          {/* Hidden challan ID if pre-filled */}
+          {challanId && (
+            <input type="hidden" value={challanId} />
+          )}
+
+          {!challanId && (
+            <div>
+              <label className="input-label">Challan ID *</label>
+              <input
+                type="text"
+                className="input"
+                placeholder="Enter the challan ID"
+                value={challanId}
+                onChange={(e) => setChallanId(e.target.value)}
+                required
+              />
+            </div>
+          )}
 
           <div>
             <label className="input-label">Reason for Grievance *</label>
@@ -181,7 +248,7 @@ export default function FileGrievance() {
             </div>
           </div>
 
-          <button type="submit" disabled={loading || !reason} className="btn-primary w-full">
+          <button type="submit" disabled={loading || !challanId || !reason} className="btn-primary w-full">
             {loading ? (
               <>
                 <Loader2 className="h-4 w-4 animate-spin" />

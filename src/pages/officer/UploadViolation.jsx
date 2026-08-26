@@ -26,12 +26,33 @@ export default function UploadViolation() {
   const [error, setError] = useState('');
   const [success, setSuccess] = useState(false);
   const [result, setResult] = useState(null);
+  const [detecting, setDetecting] = useState(false);
+  const [plateDetected, setPlateDetected] = useState(false);
 
-  const handleFileChange = (e) => {
+  const handleFileChange = async (e) => {
     const selected = e.target.files?.[0];
     if (selected) {
       setFile(selected);
       setPreview(URL.createObjectURL(selected));
+      setPlateDetected(false);
+      setPlateNumber('');
+
+      // Auto-detect plate from the image
+      setDetecting(true);
+      try {
+        const formData = new FormData();
+        formData.append('image', selected);
+        const res = await manualViolationAPI.detectPlate(formData);
+        if (res.data.success && res.data.detectedPlate) {
+          setPlateNumber(res.data.detectedPlate);
+          setPlateDetected(true);
+        }
+      } catch (err) {
+        // Silent fail — officer can type manually
+        console.log('Plate auto-detection failed:', err.message);
+      } finally {
+        setDetecting(false);
+      }
     }
   };
 
@@ -183,15 +204,30 @@ export default function UploadViolation() {
 
           {/* Plate Number */}
           <div>
-            <label className="input-label">Vehicle Plate Number *</label>
+            <label className="input-label">
+              Vehicle Plate Number *
+              {detecting && (
+                <span className="ml-2 text-xs text-primary-500 font-normal flex items-center gap-1 inline-flex">
+                  <Loader2 className="h-3 w-3 animate-spin" /> Detecting...
+                </span>
+              )}
+              {plateDetected && !detecting && (
+                <span className="ml-2 text-xs text-success-500 font-normal">✓ Auto-detected</span>
+              )}
+            </label>
             <input
               type="text"
-              className="input font-mono uppercase"
+              className={`input font-mono uppercase ${plateDetected ? 'border-success-300 bg-success-50 dark:bg-success-900/10' : ''}`}
               placeholder="e.g. MH12AB1234"
               value={plateNumber}
-              onChange={e => setPlateNumber(e.target.value.toUpperCase())}
+              onChange={e => { setPlateNumber(e.target.value.toUpperCase()); setPlateDetected(false); }}
               required
             />
+            {plateDetected && (
+              <p className="text-xs text-success-600 mt-1">
+                Plate number auto-detected. Edit if incorrect.
+              </p>
+            )}
           </div>
 
           {/* Location */}

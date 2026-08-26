@@ -12,7 +12,7 @@ function RegisterContent() {
   const { isDay, toggleMode, bgImage } = useDayNight();
 
   const [step, setStep] = useState('form');
-  const [form, setForm] = useState({ fullName: '', email: '', password: '', confirmPassword: '', phone: '' });
+  const [form, setForm] = useState({ fullName: '', email: '', password: '', confirmPassword: '', phone: '', vehicleNumber: '' });
   const [otp, setOtp] = useState('');
   const [showPassword, setShowPassword] = useState(false);
   const [showConfirm, setShowConfirm] = useState(false);
@@ -91,6 +91,7 @@ function RegisterContent() {
         email: form.email,
         password: form.password,
         phone: form.phone,
+        vehicleNumber: form.vehicleNumber,
       });
       setStep('success');
       setTimeout(() => navigate('/login'), 3000);
@@ -240,6 +241,12 @@ function RegisterContent() {
                         </div>
 
                         <div>
+                          <label className="text-[9px] font-semibold text-slate-500 mb-0.5 block">Vehicle Number</label>
+                          <input type="text" name="vehicleNumber" placeholder="e.g. MH12AB1234" value={form.vehicleNumber} onChange={handleChange}
+                            className={inputClass} />
+                        </div>
+
+                        <div>
                           <label className="text-[9px] font-semibold text-slate-500 mb-0.5 block">Password</label>
                           <div className="relative">
                             <input type={showPassword ? 'text' : 'password'} name="password" placeholder="Min 6 characters" value={form.password} onChange={handleChange} required minLength={6}
@@ -262,7 +269,7 @@ function RegisterContent() {
                         </div>
 
                         <motion.button type="submit"
-                          disabled={loading || !form.fullName || !form.email || !form.password || !form.confirmPassword || !form.phone}
+                          disabled={loading || !form.fullName || !form.email || !form.password || !form.confirmPassword || !form.phone || !form.vehicleNumber}
                           className="w-full py-2 rounded-lg text-white text-[11px] font-semibold flex items-center justify-center gap-1.5 shadow-md disabled:opacity-50 disabled:cursor-not-allowed transition-colors mt-1"
                           style={{ background: 'linear-gradient(135deg, #2563eb 0%, #1d4ed8 100%)' }}
                           whileHover={{ scale: loading ? 1 : 1.02 }} whileTap={{ scale: loading ? 1 : 0.98 }}>
