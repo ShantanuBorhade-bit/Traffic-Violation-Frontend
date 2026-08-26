@@ -81,8 +81,8 @@ export default function Sidebar({ isOpen, onClose }) {
             <Shield className="h-6 w-6 text-white" />
           </div>
           <div>
-            <h1 className="text-lg font-bold text-slate-900 dark:text-white leading-tight">TrafficGuard</h1>
-            <p className="text-xs text-slate-500 dark:text-slate-400">Violation Management</p>
+            <h1 className="text-lg font-bold text-slate-900 dark:text-white leading-tight">Traffic Mama</h1>
+            <p className="text-xs text-slate-500 dark:text-slate-400">Dekhega bhi, pakdega bhi.</p>
           </div>
         </div>
 

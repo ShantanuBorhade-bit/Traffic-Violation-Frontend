@@ -107,7 +107,7 @@ export default function AdminDashboard() {
               <Shield className="h-5 w-5 text-slate-400" />
               <div>
                 <p className="text-xs text-slate-500 dark:text-slate-400">System</p>
-                <p className="text-sm font-medium text-slate-700 dark:text-slate-200">TrafficGuard v1.0</p>
+                <p className="text-sm font-medium text-slate-700 dark:text-slate-200">Traffic Mama v1.0</p>
               </div>
             </div>
             <div className="flex items-center gap-3 p-3 bg-slate-50 dark:bg-slate-700/50 rounded-lg">

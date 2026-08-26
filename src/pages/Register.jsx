@@ -199,7 +199,7 @@ function RegisterContent() {
                     </h1>
                     <p className="text-[9px] text-slate-400 mt-1">
                       {step === 'form'
-                        ? 'Create your TrafficGuard account'
+                        ? 'Create your Traffic Mama account'
                         : <>Enter the 6-digit code sent to<br /><span className="font-semibold text-slate-600">{form.phone}</span></>}
                     </p>
                     <div className="w-full h-px bg-gradient-to-r from-transparent via-slate-300 to-transparent mt-3" />

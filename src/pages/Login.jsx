@@ -106,9 +106,9 @@ function LoginContent() {
                   <Shield className="h-5 w-5 text-white" />
                 </div>
                 <h1 className="text-xs font-bold text-slate-800 tracking-wider leading-tight uppercase">
-                  Traffic Violation<br />Detection System
+                  Traffic Mama
                 </h1>
-                <p className="text-[9px] text-slate-400 mt-1">Full Stack Project</p>
+                <p className="text-[9px] text-slate-400 mt-1">Dekhega bhi, pakdega bhi.</p>
                 <div className="w-full h-px bg-gradient-to-r from-transparent via-slate-300 to-transparent mt-3" />
               </div>
 
