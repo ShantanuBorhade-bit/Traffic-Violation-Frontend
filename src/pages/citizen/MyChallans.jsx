@@ -21,6 +21,8 @@ import {
   AlertCircle,
   MapPin,
   X,
+  CreditCard,
+  Wallet,
 } from 'lucide-react';
 import clsx from 'clsx';
 
@@ -53,16 +55,24 @@ function ImageModal({ src, alt, onClose }) {
 
 function ChallanCard({ challan, onViewImage }) {
   const [expanded, setExpanded] = useState(false);
-  const isOverdue =
-    (challan.status === 'ISSUED' || challan.status === 'PENDING_PAYMENT') &&
-    isPast(new Date(challan.dueDate));
+  const isPayable = challan.status === 'ISSUED' || challan.status === 'PENDING_PAYMENT';
+  const isOverdue = isPayable && isPast(new Date(challan.dueDate));
   const evidenceUrl = challan.violation?.evidence?.imageUrl;
 
   return (
     <div className="card overflow-hidden">
-      <button
+      <div
+        role="button"
+        tabIndex={0}
+        aria-expanded={expanded}
         onClick={() => setExpanded(!expanded)}
-        className="w-full flex items-center gap-4 p-5 text-left hover:bg-slate-50 dark:hover:bg-slate-700/50 transition-colors"
+        onKeyDown={(e) => {
+          if (e.key === 'Enter' || e.key === ' ') {
+            e.preventDefault();
+            setExpanded(!expanded);
+          }
+        }}
+        className="w-full flex items-center gap-4 p-5 text-left cursor-pointer hover:bg-slate-50 dark:hover:bg-slate-700/50 transition-colors"
       >
         {/* Evidence thumbnail */}
         {evidenceUrl ? (
@@ -107,10 +117,20 @@ function ChallanCard({ challan, onViewImage }) {
           <p className="text-xs text-slate-400 dark:text-slate-500">fine</p>
         </div>
 
+        {isPayable && (
+          <Link
+            to={`/citizen/pay/${challan.id}`}
+            onClick={(e) => e.stopPropagation()}
+            className="hidden sm:inline-flex flex-shrink-0 items-center gap-1.5 rounded-xl bg-gradient-to-r from-primary-600 to-primary-500 px-3.5 py-2 text-xs font-semibold text-white shadow-sm transition-all hover:from-primary-700 hover:to-primary-600 hover:shadow-md"
+          >
+            <CreditCard className="h-3.5 w-3.5" /> Pay
+          </Link>
+        )}
+
         <div className="flex-shrink-0 text-slate-400">
           {expanded ? <ChevronUp className="h-5 w-5" /> : <ChevronDown className="h-5 w-5" />}
         </div>
-      </button>
+      </div>
 
       {expanded && (
         <div className="border-t border-slate-100 dark:border-slate-700 bg-slate-50 dark:bg-slate-700/30 px-5 py-5">
@@ -213,8 +233,13 @@ function ChallanCard({ challan, onViewImage }) {
               )}
 
               {/* Actions */}
-              <div className="flex items-center gap-3 pt-3 border-t border-slate-200 dark:border-slate-600">
-                {(challan.status === 'ISSUED' || challan.status === 'PENDING_PAYMENT') && (
+              <div className="flex flex-wrap items-center gap-3 pt-3 border-t border-slate-200 dark:border-slate-600">
+                {isPayable && (
+                  <Link to={`/citizen/pay/${challan.id}`} className="btn-primary text-sm">
+                    <CreditCard className="h-4 w-4" /> Pay ₹{parseFloat(challan.fineAmount).toLocaleString()}
+                  </Link>
+                )}
+                {isPayable && (
                   <Link to={`/citizen/grievances/new?challanId=${challan.id}`} className="btn-secondary text-sm">
                     <AlertCircle className="h-4 w-4" /> File Grievance
                   </Link>
@@ -225,9 +250,14 @@ function ChallanCard({ challan, onViewImage }) {
                   </span>
                 )}
                 {challan.status === 'PAID' && (
-                  <span className="text-sm text-success-600 dark:text-success-400 font-medium flex items-center gap-1">
-                    <CheckCircle2 className="h-4 w-4" /> Payment confirmed
-                  </span>
+                  <>
+                    <span className="text-sm text-success-600 dark:text-success-400 font-medium flex items-center gap-1">
+                      <CheckCircle2 className="h-4 w-4" /> Payment confirmed
+                    </span>
+                    <Link to="/citizen/payments" className="btn-secondary text-sm">
+                      <Wallet className="h-4 w-4" /> View receipt
+                    </Link>
+                  </>
                 )}
                 {challan.status === 'CANCELLED' && (
                   <span className="text-sm text-slate-500 dark:text-slate-400 font-medium flex items-center gap-1">

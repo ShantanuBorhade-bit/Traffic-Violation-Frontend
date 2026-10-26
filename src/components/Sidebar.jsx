@@ -11,12 +11,14 @@ import {
   BadgeCheck,
   Car,
   Camera,
+  Wallet,
 } from 'lucide-react';
 import clsx from 'clsx';
 
 const CITIZEN_NAV = [
   { to: '/citizen', icon: LayoutDashboard, label: 'Dashboard', end: true },
   { to: '/citizen/challans', icon: FileWarning, label: 'My Challans' },
+  { to: '/citizen/payments', icon: Wallet, label: 'Payments' },
   { to: '/citizen/grievances', icon: AlertCircle, label: 'My Grievances' },
 ];
 

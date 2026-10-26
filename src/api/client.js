@@ -45,6 +45,17 @@ export const citizenChallanAPI = {
   getById: (id) => api.get(`/challans/${id}`),
 };
 
+// ── Payments (Citizen) — demo checkout, no real money moves ──
+export const paymentAPI = {
+  // `idempotencyKey` travels in the body (the API validates it there, not as a header).
+  create: (data) => api.post('/payments', data),
+  simulate: (id, outcome) => api.post(`/payments/${id}/simulate`, { outcome }),
+  getById: (id) => api.get(`/payments/${id}`),
+  getByReference: (reference) => api.get(`/payments/reference/${reference}`),
+  getMyPayments: (params) => api.get('/payments/my', { params }),
+  getReceipt: (id) => api.get(`/payments/${id}/receipt`),
+};
+
 // ── Grievances (Citizen) ──
 export const grievanceAPI = {
   create: (formData) =>

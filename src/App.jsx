@@ -15,6 +15,8 @@ const Profile = lazy(() => import('./pages/Profile'));
 const CitizenDashboard = lazy(() => import('./pages/citizen/CitizenDashboard'));
 const MyChallans = lazy(() => import('./pages/citizen/MyChallans'));
 const MyGrievances = lazy(() => import('./pages/citizen/MyGrievances'));
+const PaymentCheckout = lazy(() => import('./pages/citizen/PaymentCheckout'));
+const MyPayments = lazy(() => import('./pages/citizen/MyPayments'));
 const FileGrievance = lazy(() => import('./pages/citizen/FileGrievance'));
 const GrievanceDetail = lazy(() => import('./pages/citizen/GrievanceDetail'));
 
@@ -80,6 +82,22 @@ function AnimatedRoutes() {
                 element={
                   <ProtectedRoute allowedRoles={['CITIZEN']}>
                     <MyChallans />
+                  </ProtectedRoute>
+                }
+              />
+              <Route
+                path="/citizen/pay/:challanId"
+                element={
+                  <ProtectedRoute allowedRoles={['CITIZEN']}>
+                    <PaymentCheckout />
+                  </ProtectedRoute>
+                }
+              />
+              <Route
+                path="/citizen/payments"
+                element={
+                  <ProtectedRoute allowedRoles={['CITIZEN']}>
+                    <MyPayments />
                   </ProtectedRoute>
                 }
               />
