@@ -1,6 +1,8 @@
 import axios from 'axios';
 
-const API_BASE = '/api/v1';
+// Development keeps the relative path so the Vite proxy forwards to localhost:5000.
+// A deployed build sets VITE_API_URL, e.g. https://traffic-mama-backend.onrender.com/api/v1
+const API_BASE = (import.meta.env.VITE_API_URL || '/api/v1').replace(/\/+$/, '');
 
 const api = axios.create({
   baseURL: API_BASE,
