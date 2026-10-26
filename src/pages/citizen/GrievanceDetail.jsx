@@ -4,7 +4,9 @@ import { grievanceAPI } from '../../api/client';
 import StatusBadge from '../../components/StatusBadge';
 import Spinner from '../../components/Spinner';
 import { format } from 'date-fns';
-import { ArrowLeft, User, FileText, Camera, MapPin, X, Image } from 'lucide-react';
+import { ArrowLeft, User, FileText, Camera, MapPin, X, Image, CreditCard } from 'lucide-react';
+
+const PAYABLE_STATUSES = ['ISSUED', 'PENDING_PAYMENT'];
 
 function ImageModal({ src, alt, onClose }) {
   if (!src) return null;
@@ -144,6 +146,18 @@ export default function GrievanceDetail() {
                   <p className="font-medium text-slate-700 dark:text-slate-200">{format(new Date(grievance.challan.dueDate), 'MMM d, yyyy')}</p>
                 </div>
               </div>
+
+              {/* Rejection puts the challan back in a payable state — offer payment here too */}
+              {grievance.status === 'REJECTED' && PAYABLE_STATUSES.includes(grievance.challan.status) && (
+                <div className="mt-4 pt-4 border-t border-slate-200 dark:border-slate-700 space-y-2">
+                  <p className="text-xs text-slate-500 dark:text-slate-400">
+                    This grievance was rejected, so the fine is payable again.
+                  </p>
+                  <Link to={`/citizen/pay/${grievance.challan.id}`} className="btn-primary text-sm w-full justify-center">
+                    <CreditCard className="h-4 w-4" /> Pay ₹{parseFloat(grievance.challan.fineAmount).toLocaleString()}
+                  </Link>
+                </div>
+              )}
             </div>
           )}
 
