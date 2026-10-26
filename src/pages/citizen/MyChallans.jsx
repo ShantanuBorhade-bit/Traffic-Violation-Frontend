@@ -33,6 +33,12 @@ const VIOLATION_LABELS = {
   LANE_VIOLATION: 'Lane Violation', MORE_THAN_2_PEOPLE_ON_BIKE: 'More Than 2 on Bike',
 };
 
+const PAYMENT_METHOD_LABELS = {
+  UPI: 'UPI',
+  CREDIT_CARD: 'Credit Card',
+  DEBIT_CARD: 'Debit Card',
+};
+
 const VIOLATION_ICONS = {
   NO_HELMET: '🪖', NO_SEATBELT: '🔗', RED_LIGHT_JUMP: '🔴',
   SPEEDING: '⚡', WRONG_SIDE: '↩️', ILLEGAL_PARKING: '🅿️',
@@ -56,6 +62,8 @@ function ImageModal({ src, alt, onClose }) {
 function ChallanCard({ challan, onViewImage }) {
   const [expanded, setExpanded] = useState(false);
   const isPayable = challan.status === 'ISSUED' || challan.status === 'PENDING_PAYMENT';
+  // Latest transaction linked to this challan (same data the Payments page shows).
+  const transaction = challan.payments?.[0];
   const isOverdue = isPayable && isPast(new Date(challan.dueDate));
   const evidenceUrl = challan.violation?.evidence?.imageUrl;
 
@@ -229,6 +237,45 @@ function ChallanCard({ challan, onViewImage }) {
                       </div>
                     )}
                   </div>
+                </div>
+              )}
+
+              {transaction && (
+                <div className="space-y-2 rounded-xl border border-success-200/70 bg-success-50/70 p-3 dark:border-success-800/50 dark:bg-success-900/20">
+                  <h4 className="flex items-center gap-1.5 text-xs font-semibold uppercase tracking-wider text-success-700 dark:text-success-300">
+                    <Wallet className="h-3.5 w-3.5" /> Transaction
+                  </h4>
+                  <div className="grid grid-cols-2 gap-3 text-sm">
+                    <div>
+                      <p className="text-xs text-slate-500 dark:text-slate-400">Reference</p>
+                      <p className="font-mono text-xs font-semibold text-slate-800 dark:text-slate-100">
+                        {transaction.reference}
+                      </p>
+                    </div>
+                    <div>
+                      <p className="text-xs text-slate-500 dark:text-slate-400">Method</p>
+                      <p className="text-sm font-medium text-slate-800 dark:text-slate-100">
+                        {PAYMENT_METHOD_LABELS[transaction.method] || transaction.method}
+                      </p>
+                    </div>
+                    <div>
+                      <p className="text-xs text-slate-500 dark:text-slate-400">Amount</p>
+                      <p className="text-sm font-semibold text-success-700 dark:text-success-300">
+                        ₹{parseFloat(transaction.amount).toLocaleString()}
+                      </p>
+                    </div>
+                    <div>
+                      <p className="text-xs text-slate-500 dark:text-slate-400">Settled</p>
+                      <p className="text-sm font-medium text-slate-800 dark:text-slate-100">
+                        {transaction.completedAt
+                          ? format(new Date(transaction.completedAt), 'MMM d, yyyy h:mm a')
+                          : '—'}
+                      </p>
+                    </div>
+                  </div>
+                  <p className="text-[0.68rem] uppercase tracking-wider text-amber-700 dark:text-amber-300">
+                    Demo — no real money transferred
+                  </p>
                 </div>
               )}
 

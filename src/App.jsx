@@ -32,6 +32,7 @@ const AdminViolationDetail = lazy(() => import('./pages/admin/AdminViolationDeta
 const AdminChallans = lazy(() => import('./pages/admin/AdminChallans'));
 const AdminGrievances = lazy(() => import('./pages/admin/AdminGrievances'));
 const AdminUsers = lazy(() => import('./pages/admin/AdminUsers'));
+const AdminPayments = lazy(() => import('./pages/admin/AdminPayments'));
 
 function PageLoader() {
   return (
@@ -214,6 +215,14 @@ function AnimatedRoutes() {
                 element={
                   <ProtectedRoute allowedRoles={['ADMIN']}>
                     <AdminUsers />
+                  </ProtectedRoute>
+                }
+              />
+              <Route
+                path="/admin/payments"
+                element={
+                  <ProtectedRoute allowedRoles={['ADMIN']}>
+                    <AdminPayments />
                   </ProtectedRoute>
                 }
               />

@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import { useAuth } from '../../context/AuthContext';
-import { violationAPI, challanAPI, adminUserAPI, grievanceAPI } from '../../api/client';
+import { violationAPI, challanAPI, adminUserAPI, grievanceAPI, paymentAPI } from '../../api/client';
 import StatCard from '../../components/StatCard';
 import Spinner from '../../components/Spinner';
 import { Stagger, FadeIn } from '../../components/AnimatedElements';
@@ -15,32 +15,36 @@ import {
   Activity,
   TrendingUp,
   IndianRupee,
+  Wallet,
 } from 'lucide-react';
 
 const QUICK_ACTIONS = [
   { to: '/admin/violations', icon: FileWarning, label: 'Violations', description: 'View and manage all traffic violations detected by the system', color: 'bg-danger-50 dark:bg-danger-900/30 text-danger-600 dark:text-danger-400' },
   { to: '/admin/challans', icon: BadgeCheck, label: 'Challans', description: 'Track and manage all issued challans and payment statuses', color: 'bg-warning-50 dark:bg-warning-900/30 text-warning-600 dark:text-warning-400' },
+  { to: '/admin/payments', icon: Wallet, label: 'Transactions', description: 'Demo payment attempts, settlements and citizen receipts', color: 'bg-indigo-50 dark:bg-indigo-900/30 text-indigo-600 dark:text-indigo-400' },
   { to: '/admin/grievances', icon: AlertCircle, label: 'Grievances', description: 'Review and resolve citizen-submitted grievances', color: 'bg-primary-50 dark:bg-primary-900/30 text-primary-600 dark:text-primary-400' },
   { to: '/admin/users', icon: Users, label: 'Users', description: 'Manage user accounts and role assignments', color: 'bg-success-50 dark:bg-success-900/30 text-success-600 dark:text-success-400' },
 ];
 
 export default function AdminDashboard() {
   const { user } = useAuth();
-  const [stats, setStats] = useState({ violations: 0, challans: 0, users: 0, grievances: 0, pendingFines: 0 });
+  const [stats, setStats] = useState({ violations: 0, challans: 0, users: 0, grievances: 0, pendingFines: 0, collected: 0 });
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     async function fetchStats() {
       try {
-        const [vRes, cRes, uRes, gRes] = await Promise.allSettled([
+        const [vRes, cRes, uRes, gRes, pRes] = await Promise.allSettled([
           violationAPI.list(),
           challanAPI.list(),
           adminUserAPI.list(),
           grievanceAPI.getMyGrievances(), // Using this as a proxy — admin may not have own grievances
+          paymentAPI.listAll({ limit: 100 }),
         ]);
         const violations = vRes.status === 'fulfilled' ? (vRes.value.data.violations || []) : [];
         const challans = cRes.status === 'fulfilled' ? (cRes.value.data.challans || []) : [];
         const users = uRes.status === 'fulfilled' ? (uRes.value.data.users || []) : [];
+        const payments = pRes.status === 'fulfilled' ? (pRes.value.data.payments || []) : [];
         setStats({
           violations: violations.length,
           challans: challans.length,
@@ -49,6 +53,9 @@ export default function AdminDashboard() {
           pendingFines: challans
             .filter(c => c.status === 'ISSUED' || c.status === 'PENDING_PAYMENT')
             .reduce((s, c) => s + parseFloat(c.fineAmount || 0), 0),
+          collected: payments
+            .filter(p => p.status === 'SUCCESS')
+            .reduce((s, p) => s + Number(p.amount || 0), 0),
         });
       } catch { /* ignore */ } finally { setLoading(false); }
     }
@@ -70,10 +77,11 @@ export default function AdminDashboard() {
       {loading ? (
         <div className="flex items-center justify-center py-10"><Spinner size="lg" /></div>
       ) : (
-        <div className="grid grid-cols-2 lg:grid-cols-5 gap-4">
+        <div className="grid grid-cols-2 lg:grid-cols-3 xl:grid-cols-6 gap-4">
           <StatCard icon={FileWarning} label="Total Violations" value={stats.violations} color="danger" />
           <StatCard icon={BadgeCheck} label="Total Challans" value={stats.challans} color="warning" />
           <StatCard icon={IndianRupee} label="Pending Fines" value={`₹${stats.pendingFines.toLocaleString()}`} color="danger" />
+          <StatCard icon={Wallet} label="Collected (demo)" value={`₹${stats.collected.toLocaleString()}`} color="success" />
           <StatCard icon={Users} label="Users" value={stats.users} color="primary" />
           <StatCard icon={AlertCircle} label="Grievances" value={stats.grievances} color="success" />
         </div>

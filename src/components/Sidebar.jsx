@@ -37,6 +37,7 @@ const ADMIN_NAV = [
   { to: '/admin', icon: LayoutDashboard, label: 'Dashboard', end: true },
   { to: '/admin/violations', icon: FileWarning, label: 'Violations' },
   { to: '/admin/challans', icon: BadgeCheck, label: 'Challans' },
+  { to: '/admin/payments', icon: Wallet, label: 'Transactions' },
   { to: '/admin/grievances', icon: AlertCircle, label: 'Grievances' },
   { to: '/admin/users', icon: Users, label: 'Users' },
 ];

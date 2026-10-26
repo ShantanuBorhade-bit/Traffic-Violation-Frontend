@@ -54,6 +54,8 @@ export const paymentAPI = {
   getByReference: (reference) => api.get(`/payments/reference/${reference}`),
   getMyPayments: (params) => api.get('/payments/my', { params }),
   getReceipt: (id) => api.get(`/payments/${id}/receipt`),
+  // Admin/operator listing across all citizens.
+  listAll: (params) => api.get('/admin/payments', { params }),
 };
 
 // ── Grievances (Citizen) ──
