@@ -12,6 +12,7 @@ import {
   Car,
   Camera,
   Wallet,
+  Video,
 } from 'lucide-react';
 import clsx from 'clsx';
 
@@ -36,6 +37,7 @@ const GRIEVANCE_OFFICER_NAV = [
 const ADMIN_NAV = [
   { to: '/admin', icon: LayoutDashboard, label: 'Dashboard', end: true },
   { to: '/admin/violations', icon: FileWarning, label: 'Violations' },
+  { to: '/admin/detection', icon: Video, label: 'Live Detection' },
   { to: '/admin/challans', icon: BadgeCheck, label: 'Challans' },
   { to: '/admin/payments', icon: Wallet, label: 'Transactions' },
   { to: '/admin/grievances', icon: AlertCircle, label: 'Grievances' },

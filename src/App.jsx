@@ -29,6 +29,7 @@ const MyUploads = lazy(() => import('./pages/officer/MyUploads'));
 const AdminDashboard = lazy(() => import('./pages/admin/AdminDashboard'));
 const AdminViolations = lazy(() => import('./pages/admin/AdminViolations'));
 const AdminViolationDetail = lazy(() => import('./pages/admin/AdminViolationDetail'));
+const AdminLiveDetection = lazy(() => import('./pages/admin/AdminLiveDetection'));
 const AdminChallans = lazy(() => import('./pages/admin/AdminChallans'));
 const AdminGrievances = lazy(() => import('./pages/admin/AdminGrievances'));
 const AdminUsers = lazy(() => import('./pages/admin/AdminUsers'));
@@ -191,6 +192,14 @@ function AnimatedRoutes() {
                 element={
                   <ProtectedRoute allowedRoles={['ADMIN']}>
                     <AdminViolationDetail />
+                  </ProtectedRoute>
+                }
+              />
+              <Route
+                path="/admin/detection"
+                element={
+                  <ProtectedRoute allowedRoles={['ADMIN']}>
+                    <AdminLiveDetection />
                   </ProtectedRoute>
                 }
               />
